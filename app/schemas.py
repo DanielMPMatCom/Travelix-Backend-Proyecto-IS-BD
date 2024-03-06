@@ -4,6 +4,7 @@ from datetime import time
 
 
 class AgencySchema(BaseModel):
+    id : Optional[int] = None
     name: Optional[str] = None
     address: Optional[str] = None
     fax_number: Optional[int] = None
