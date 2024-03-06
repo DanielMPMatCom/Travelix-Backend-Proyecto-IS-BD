@@ -1,17 +1,30 @@
-from fastapi import FastAPI
-from db.config import engine
-from api.routes import routers
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 
+from api.routes import router
+from db.config import Base, engine
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-app.include_router(routers)
+app.include_router(router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", port=8000, reload=True)
 
 
 @app.get("/")
 async def Home():
-    app = FastAPI()
     return HTMLResponse(
         """
 <html>
