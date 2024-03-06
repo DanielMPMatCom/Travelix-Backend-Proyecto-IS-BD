@@ -10,5 +10,5 @@ router = APIRouter(prefix="/agency", tags=["agency"])
 
 
 @router.get("/list")
-async def list_agency(db:Session=Depends(get_db)):
-    return crud.list_agency(db, 0, 5)
+async def list_agency(db:Session=Depends(get_db), skip:int=0, limit:int=10):
+    return crud.list_agency(db, skip, limit)

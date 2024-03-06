@@ -3,7 +3,7 @@ from models import AgencyModel
 from schemas import AgencySchema
 
 
-def list_agency(db: Session, skip: int = 0, limit: int = 100):
+def list_agency(db: Session, skip: int, limit: int):
     return db.query(AgencyModel).offset(skip).limit(limit).all()
 
 def toModel(schema:AgencySchema) -> AgencyModel:
