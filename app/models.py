@@ -27,9 +27,10 @@ class UserModel(Base):
     role = Column(String(20), nullable=False)
     password = Column(String(100), nullable=False)
 
-class TouristModel(Base):
+class TouristModel(UserModel):
 
     __tablename__ = "tourist"
 
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, ForeignKey('user.id'), primary_key=True, nullable=False)
     nationality = Column(String(50), nullable=False)
+    
