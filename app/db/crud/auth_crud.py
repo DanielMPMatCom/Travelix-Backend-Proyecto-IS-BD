@@ -7,6 +7,7 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from models import UserModel
 from schemas import Token, TokenData, UserSchema
+from db.config import get_db
 
 SECRET_KEY = "f3"
 ALGORITHM = "HS256"
@@ -67,7 +68,7 @@ async def get_current_active_user(current_user: UserModel = Depends(get_current_
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-def login_for_access_token(db:Session, from_data:OAuth2PasswordRequestForm=Depends()):
+def login_for_access_token(db:Session=Depends(get_db), from_data:OAuth2PasswordRequestForm=Depends()):
     user = authenticate_user(db, from_data.username, from_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")

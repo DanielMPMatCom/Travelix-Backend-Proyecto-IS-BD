@@ -11,8 +11,8 @@ router = APIRouter(prefix="/tourist", tags=["tourist"])
 
 
 @router.post("/token", response_model=Token)
-async def login(db: Session = Depends(get_db)):
-    return login_for_access_token(db)
+async def login(token = Depends(login_for_access_token)):
+    return token
 
 
 @router.post("/create", response_model=str)
