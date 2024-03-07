@@ -14,3 +14,22 @@ class AgencyModel(Base):
     address = Column(String(100), nullable=False)
     fax_number = Column(Integer, nullable=False)
     email = Column(String(100), nullable=False)
+
+class UserModel(Base):
+
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    username = Column(String(50), nullable=False, unique=True)
+    name = Column(String(50), nullable=False)
+    phone = Column(String(20), nullable=False)
+    email = Column(String(100), nullable=False)
+    role = Column(String(20), nullable=False)
+    password = Column(String(100), nullable=False)
+
+class TouristModel(Base):
+
+    __tablename__ = "tourist"
+
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    nationality = Column(String(50), nullable=False)
