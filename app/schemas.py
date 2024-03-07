@@ -4,7 +4,7 @@ from datetime import time
 
 
 class AgencySchema(BaseModel):
-    id : Optional[int] = None
+    id : Optional[int]
     name: Optional[str] = None
     address: Optional[str] = None
     fax_number: Optional[int] = None
@@ -20,7 +20,7 @@ class TokenData(BaseModel):
 
 class UserSchema(BaseModel):
     disabled: Optional[bool] = None
-    id: Optional[int] = None
+    id: Optional[int]
     username: Optional[str] = None
     name: Optional[str] = None
     phone: Optional[str] = None

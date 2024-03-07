@@ -31,5 +31,5 @@ class TouristModel(Base):
 
     __tablename__ = "tourist"
 
-    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    id = Column(Integer, primary_key=True, nullable=False)
     nationality = Column(String(50), nullable=False)

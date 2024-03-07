@@ -50,18 +50,21 @@ def get_tourist_me(db:Session, current_user = Depends(auth.get_current_active_us
 
 def UserToModel(schema: TouristCreateSchema) -> UserModel:
     return UserModel(
-        id=schema.id,
+        # id=schema.id,
         username=schema.username,
         name=schema.name,
         phone=schema.phone,
         email=schema.email,
         role=schema.role,
-        password=auth.get_password_hash(schema.password),
+        password=auth.get_password_hash(schema.password)
     )
 
 
 def TouristToModel(schema: TouristCreateSchema) -> TouristModel:
-    return TouristModel(id=schema.id, nationality=schema.nationality)
+    return TouristModel(
+        # id=schema.id,
+        nationality=schema.nationality,
+        )
 
 def ModelToSchema(user:UserModel, tourist:TouristModel) -> TouristSchema:
     return TouristSchema(
