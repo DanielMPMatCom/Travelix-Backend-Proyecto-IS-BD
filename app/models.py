@@ -135,29 +135,29 @@ class PackageModel(Base):
     price = Column(Float, nullable=False)
 
 
-class PackageReservation(Base):
+# class PackageReservation(Base):
 
-    __tablename__ = "package_reservation"
+#     __tablename__ = "package_reservation"
 
-    tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
-    package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
-    agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
-    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
-    reservation_date = Column(Date, primary_key=True, nullable=False)
-class PackageFacilityAssociation(Base):
+#     tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
+#     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
+#     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
+#     extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
+#     reservation_date = Column(Date, primary_key=True, nullable=False)
+# class PackageFacilityAssociation(Base):
 
-    __tablename__ = "package_facility_association"
+#     __tablename__ = "package_facility_association"
 
-    package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
-    agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
-    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
-    facility_id = Column(Integer, ForeignKey('facility.id'), primary_key=True, nullable=False)
+#     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
+#     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
+#     extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
+#     facility_id = Column(Integer, ForeignKey('facility.id'), primary_key=True, nullable=False)
 
-class HotelExtendedExcursionAssociation(Base):
+# class HotelExtendedExcursionAssociation(Base):
 
-    __tablename__ = "hotel_extended_excursion_association"
+#     __tablename__ = "hotel_extended_excursion_association"
 
-    hotel_id = Column(Integer, ForeignKey('hotel.id'), primary_key=True, nullable=False)
-    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
-    departure_date = Column(Date, primary_key=True, nullable=False)
-    arrival_date = Column(Date, primary_key=True, nullable=False)
+#     hotel_id = Column(Integer, ForeignKey('hotel.id'), primary_key=True, nullable=False)
+#     extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
+#     departure_date = Column(Date, primary_key=True, nullable=False)
+#     arrival_date = Column(Date, primary_key=True, nullable=False)
