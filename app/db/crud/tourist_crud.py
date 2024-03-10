@@ -18,13 +18,15 @@ def create_tourist(db: Session, tourist_create: TouristCreateSchema):
             detail="Username already registered",
         )
 
-    user = UserToModel(tourist_create)
-    tourist = TouristToModel(tourist_create)
+    # user = UserToModel(tourist_create)
+    # db.add(user)
+    # db.commit()
+    # db.refresh(user)
 
-    db.add_all([tourist, user])
+    tourist = TouristToModel(tourist_create)
+    db.add(tourist)
     db.commit()
     db.refresh(tourist)
-    db.refresh(user)
 
     return "Success"
 
@@ -48,20 +50,29 @@ def get_tourist_me(db:Session, current_user = Depends(auth.get_current_active_us
     return ModelToSchema(current_user, tourist)
 
 
-def UserToModel(schema: TouristCreateSchema) -> UserModel:
-    return UserModel(
-        id=schema.id,
+# def UserToModel(schema: TouristCreateSchema) -> UserModel:
+#     return UserModel(
+#         # id=schema.id,
+#         username=schema.username,
+#         name=schema.name,
+#         phone=schema.phone,
+#         email=schema.email,
+#         role=schema.role,
+#         password=auth.get_password_hash(schema.password)
+#     )
+
+
+def TouristToModel(schema: TouristCreateSchema) -> TouristModel:
+    return TouristModel(
+        # id=schema.id,
         username=schema.username,
         name=schema.name,
         phone=schema.phone,
         email=schema.email,
         role=schema.role,
         password=auth.get_password_hash(schema.password),
-    )
-
-
-def TouristToModel(schema: TouristCreateSchema) -> TouristModel:
-    return TouristModel(id=schema.id, nationality=schema.nationality)
+        nationality=schema.nationality,
+        )
 
 def ModelToSchema(user:UserModel, tourist:TouristModel) -> TouristSchema:
     return TouristSchema(
