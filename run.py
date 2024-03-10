@@ -4,6 +4,28 @@ import platform
 import webbrowser
 import time
 import requests
+from pathlib import Path
+
+
+absolute_path = Path("app/db").resolve()
+docker_compose_command = "docker-compose up -d"
+
+try:
+    result = subprocess.run(docker_compose_command, shell=True, cwd=absolute_path, check=True, capture_output=True)
+    standard_output = result.stdout.decode("utf-8")
+    error_output = result.stderr.decode("utf-8")
+
+    print("Standard:")
+    print(standard_output)
+
+    if error_output:
+        print("Error output:")
+        print(error_output)
+
+except subprocess.CalledProcessError as e:
+    print(f"Error executing command: {e}")
+
+
 
 os.chdir("./app")
 
