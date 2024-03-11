@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from datetime import time
+from datetime import time, date
 
 class Token(BaseModel):
     access_token: str
@@ -44,6 +44,10 @@ class ExcursionSchema(BaseModel):
     arrival_place: Optional[str] = None
     price: Optional[float] = None
 
+class ExtendedExcursionSchema(ExcursionSchema):
+    pass
+    # excursion_id: Optional[int]
+
 class OfferSchema(BaseModel):
     id: Optional[int]
     price: Optional[float] = None
@@ -72,7 +76,7 @@ class AgencyExcursionAssociationSchema(BaseModel):
 class ExcursionReservationSchema(BaseModel):
     tourist_id: Optional[int]
     excursion_id: Optional[int]
-    reservation_date: Optional[str] = None
+    reservation_date: Optional[date] = None
     
 class TouristTypeTouristAssociationSchema(BaseModel):
     tourist_id: Optional[int]
@@ -85,3 +89,15 @@ class PackageSchema(BaseModel):
     duration: Optional[int] = None
     agency_id: Optional[int] = None
     extended_excursion_id: Optional[int] = None
+
+# class PackageFacilityAssociationSchema(BaseModel):
+#     package_id: Optional[int]
+#     facility_id: Optional[int]
+#     agency_id: Optional[int]
+#     extended_excursion_id: Optional[int]
+
+class HotelExtendedExcursionAssociationSchema(BaseModel):
+    hotel_id: Optional[int]
+    extended_excursion_id: Optional[int]
+    departure_date: Optional[date] = None
+    arrival_date: Optional[date] = None

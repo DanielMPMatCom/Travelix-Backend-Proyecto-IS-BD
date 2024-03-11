@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException, status
+from sqlalchemy import delete
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Optional
 from datetime import datetime, timedelta
@@ -8,6 +9,7 @@ from sqlalchemy.orm import Session
 from models import UserModel
 from schemas import Token, TokenData, UserSchema
 from db.config import get_db
+# import db.crud.tourist_crud as tourist_crud
 
 SECRET_KEY = "f3"
 ALGORITHM = "HS256"
@@ -25,6 +27,22 @@ def get_password_hash(plain_password):
 
 def get_user(db: Session, username: str):
     return db.query(UserModel).filter(UserModel.username == username).first()
+
+# def delete_user(db: Session, user_delete: UserSchema):
+
+#     user = get_user(db, user_delete.id)
+#     if user is None:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+#     tourist = db.crud.tourist_crud.get_tourist(db, user_delete.id)
+#     if tourist is not None:
+#         db.crud.tourist_crud.delete_tourist(db, user_delete)
+#     else:
+
+#         db.delete(user)
+#         db.commit()
+
+#         return "Success"
 
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user(db, username)

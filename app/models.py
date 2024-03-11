@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Time, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, Float, Time, ForeignKey, Date, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -41,7 +41,9 @@ class AgencyModel(Base):
     fax_number = Column(Integer, nullable=False)
     email = Column(String(100), nullable=False)
 
-    excursions = relationship("ExcursionModel", secondary="agency_excursion_association", back_populates="agencies")
+    # excursions = relationship("ExcursionModel", secondary="agency_excursion_association", back_populates="agencies", cascade='all, delete-orphan')
+    # offers = relationship("OfferModel", secondary="agency_offer_association", back_populates="agencies", cascade='all, delete-orphan')
+    # packages = relationship("PackageModel", back_populates="agency", cascade='all, delete-orphan')
     
 class ExcursionModel(Base):
 
@@ -56,13 +58,17 @@ class ExcursionModel(Base):
     arrival_place = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
 
-    agencies = relationship("AgencyModel", secondary="agency_excursion_association", back_populates="excursions")
+    # agencies = relationship("AgencyModel", secondary="agency_excursion_association", back_populates="excursions", cascade='all, delete-orphan')
+    # extended_excursions = relationship("ExtendedExcursionModel", back_populates="excursion", cascade='all, delete-orphan')
 
 class ExtendedExcursionModel(ExcursionModel):
 
     __tablename__ = "extended_excursion"
 
-    id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
+    excursion_id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
+
+    # excursion = relationship("ExcursionModel", back_populates="extended_excursions", cascade='all, delete')
+    # packages = relationship("PackageModel", back_populates="extended_excursions", cascade='all, delete')
 
 class OfferModel(Base):
 
@@ -74,6 +80,7 @@ class OfferModel(Base):
 
     hotel_id = Column(Integer, ForeignKey('hotel.id'), nullable=False)
     hotel = relationship("HotelModel", back_populates="offers")
+    # agencies = relationship("AgencyModel", secondary="agency_offer_association", back_populates="offers", cascade='all, delete-orphan')
 
 class HotelModel(Base):
 
@@ -100,6 +107,10 @@ class AgencyExcursionAssociation(Base):
     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
     excursion_id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
 
+    # agency = relationship('AgencyModel', back_populates='excursions')
+    # excursion = relationship('ExcursionModel', back_populates='agencies')
+
+
 class AgencyOfferAssociation(Base):
 
     __tablename__ = "agency_offer_association"
@@ -107,6 +118,10 @@ class AgencyOfferAssociation(Base):
     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
     offer_id = Column(Integer, ForeignKey('offer.id'), primary_key=True, nullable=False)
     price = Column(Float, nullable=False)
+
+    # agency = relationship('AgencyModel', back_populates='offers')
+    # offer = relationship('OfferModel', back_populates='agencies')
+
 
 class ExcursionReservation(Base):
 
@@ -123,16 +138,26 @@ class TouristTypeTouristAssociation(Base):
     tourist_type_id = Column(Integer, ForeignKey('tourist_type.id'), primary_key=True, nullable=False)
     tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
 
+
 class PackageModel(Base):
 
     __tablename__ = "package"
 
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
-    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
+    agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False, unique=True)
+    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.excursion_id'), primary_key=True, nullable=False, unique=True)
     duration = Column(Integer, nullable=False)
     description = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('id', 'agency_id', 'extended_excursion_id'),
+    )
+    # agency = relationship("AgencyModel", back_populates="packages", cascade='all, delete-orphan')
+    # extended_excursions = relationship("ExtendedExcursionModel", back_populates="packages", cascade='all, delete')
+
+    # Establecer relación inversa
+    # facility_associations = relationship('PackageFacilityAssociation', foreign_keys=[PackageFacilityAssociation.package_id, PackageFacilityAssociation.agency_id, PackageFacilityAssociation.extended_excursion_id])
 
 
 # class PackageReservation(Base):
@@ -144,20 +169,23 @@ class PackageModel(Base):
 #     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
 #     extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
 #     reservation_date = Column(Date, primary_key=True, nullable=False)
+
+class HotelExtendedExcursionAssociation(Base):
+
+    __tablename__ = "hotel_extended_excursion_association"
+
+    hotel_id = Column(Integer, ForeignKey('hotel.id'), primary_key=True, nullable=False)
+    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.excursion_id'), primary_key=True, nullable=False)
+    departure_date = Column(Date, primary_key=True, nullable=False)
+    arrival_date = Column(Date, primary_key=True, nullable=False)
+    
 # class PackageFacilityAssociation(Base):
 
 #     __tablename__ = "package_facility_association"
 
-#     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
-#     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
-#     extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
+#     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False, unique=True)
+#     agency_id = Column(Integer, ForeignKey('package.agency_id'), primary_key=True, nullable=False, unique=True)
+#     extended_excursion_id = Column(Integer, ForeignKey('package.extended_excursion_id'), primary_key=True, nullable=False, unique=True)
 #     facility_id = Column(Integer, ForeignKey('facility.id'), primary_key=True, nullable=False)
 
-# class HotelExtendedExcursionAssociation(Base):
-
-#     __tablename__ = "hotel_extended_excursion_association"
-
-#     hotel_id = Column(Integer, ForeignKey('hotel.id'), primary_key=True, nullable=False)
-#     extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.id'), primary_key=True, nullable=False)
-#     departure_date = Column(Date, primary_key=True, nullable=False)
-#     arrival_date = Column(Date, primary_key=True, nullable=False)
+#     package = relationship('PackageModel', foreign_keys=[package_id, agency_id, extended_excursion_id])

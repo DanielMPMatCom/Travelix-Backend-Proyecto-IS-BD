@@ -19,6 +19,9 @@ async def login(token = Depends(login_for_access_token)):
 async def create_tourist(tourist_create: TouristCreateSchema, db: Session = Depends(get_db)):
     return crud.create_tourist(db, tourist_create)
 
+@router.post("/delete", response_model=str)
+async def delete_tourist(tourist_delete: TouristSchema, db: Session = Depends(get_db)):
+    return crud.delete_tourist(db, tourist_delete)
 
 # @router.get("/me", response_model=TouristSchema)
 # async def get_tourist_me(db: Session = Depends(get_db), current_user: TokenData = Depends(crud.get_current_active_user)):

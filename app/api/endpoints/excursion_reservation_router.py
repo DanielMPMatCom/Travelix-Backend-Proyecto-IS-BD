@@ -12,3 +12,11 @@ router = APIRouter(prefix="/excursion_reservation", tags=["excursion_reservation
 @router.get("/list")
 async def list_excursion_reservation(db:Session=Depends(get_db), skip:int=0, limit:int=10):
     return crud.list_excursion_reservation(db, skip, limit)
+
+@router.post("/create", response_model=str)
+async def create_excursion_reservation(excursion_reservation_create: ExcursionReservationSchema, db: Session = Depends(get_db)):
+    return crud.create_excursion_reservation(db, excursion_reservation_create)
+
+@router.post("/delete", response_model=str)
+async def delete_excursion_reservation(excursion_reservation_delete: ExcursionReservationSchema, db: Session = Depends(get_db)):
+    return crud.delete_excursion_reservation(db, excursion_reservation_delete)
