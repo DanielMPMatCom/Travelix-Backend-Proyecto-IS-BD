@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import OfferModel
+from models import OfferModel, AgencyOfferAssociation
 from schemas import OfferSchema
 import db.crud.hotel_crud as hotel
 
@@ -25,6 +26,22 @@ def create_offer(db: Session, offer_create: OfferSchema):
     db.add(offer)
     db.commit()
     db.refresh(offer)
+
+    return "Success"
+
+
+def delete_offer(db: Session, offer_delete: OfferSchema):
+
+    offer = get_offer(db, offer_delete.id)
+
+    if offer is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Offer not found")
+    
+    db.execute(delete(AgencyOfferAssociation).where(AgencyOfferAssociation.offer_id == offer_delete.id))
+    db.commit()
+
+    db.delete(offer)
+    db.commit()
 
     return "Success"
 

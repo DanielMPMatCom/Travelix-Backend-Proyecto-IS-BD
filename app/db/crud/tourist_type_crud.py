@@ -1,5 +1,7 @@
+from fastapi import HTTPException, status
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import TouristTypeModel
+from models import TouristTypeModel, TouristTypeTouristAssociation
 from schemas import TouristTypeSchema
 
 
@@ -14,6 +16,21 @@ def create_tourist_type(db: Session, tourist_type_create: TouristTypeSchema):
     db.add(tourist_type)
     db.commit()
     db.refresh(tourist_type)
+
+    return "Success"
+
+def delete_tourist_type(db: Session, tourist_type_delete: TouristTypeSchema):
+
+    tourist_type = get_tourist_type(db, tourist_type_delete.id)
+
+    if tourist_type is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist type not found")
+    
+    db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_type_id == tourist_type_delete.id))
+    db.commit()
+
+    db.delete(tourist_type)
+    db.commit()
 
     return "Success"
 

@@ -34,6 +34,27 @@ def create_agency_excursion(db: Session, agency_excursion_create: AgencyExcursio
 
     return "Success"
 
+def delete_agency_excursion(db: Session, agency_excursion_delete: AgencyExcursionAssociationSchema):
+
+
+    agency = get_agency(db, agency_excursion_delete.agency_id)
+    if agency is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
+    
+    excursion = get_excursion(db, agency_excursion_delete.excursion_id)
+    if excursion is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion not found")
+    
+    agency_excursion = get_agency_excursion(db, agency_excursion_delete.agency_id, agency_excursion_delete.excursion_id)
+    if agency_excursion is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency excursion association not found")
+
+
+    db.delete(agency_excursion)
+    db.commit()
+
+    return "Success"
+
 def toModel(schema:AgencyExcursionAssociationSchema) -> AgencyExcursionAssociation:
     return AgencyExcursionAssociation(agency_id=schema.agency_id,
                                       excursion_id=schema.excursion_id)

@@ -1,7 +1,8 @@
 from fastapi import Depends, HTTPException, status
+from sqlalchemy import delete
 from typing import Optional
 from sqlalchemy.orm import Session
-from models import TouristModel, UserModel
+from models import TouristModel, UserModel, TouristTypeTouristAssociation, ExcursionReservation
 from schemas import TouristSchema, TouristCreateSchema
 import db.crud.auth_crud as auth
 
@@ -29,6 +30,23 @@ def create_tourist(db: Session, tourist_create: TouristCreateSchema):
     db.add(tourist)
     db.commit()
     db.refresh(tourist)
+
+    return "Success"
+
+def delete_tourist(db: Session, tourist_delete: TouristCreateSchema):
+
+    tourist = get_tourist(db, tourist_delete.id)
+
+    if tourist is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
+    
+    db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_id == tourist_delete.id))
+    db.execute(delete(ExcursionReservation).where(ExcursionReservation.tourist_id == tourist_delete.id))
+
+    db.delete(tourist)
+    db.commit()
+    db.execute(delete(UserModel).where(UserModel.id == tourist_delete.id))
+    db.commit()
 
     return "Success"
 

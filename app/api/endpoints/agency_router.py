@@ -16,3 +16,7 @@ async def list_agency(db:Session=Depends(get_db), skip:int=0, limit:int=10):
 @router.post("/create", response_model=str)
 async def create_agency(agency_create: AgencySchema, db: Session = Depends(get_db)):
     return crud.create_agency(db, agency_create)
+
+@router.post("/delete", response_model=str)
+async def delete_agency(agency_delete: AgencySchema, db: Session = Depends(get_db)):
+    return crud.delete_agency(db, agency_delete)

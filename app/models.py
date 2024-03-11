@@ -41,7 +41,9 @@ class AgencyModel(Base):
     fax_number = Column(Integer, nullable=False)
     email = Column(String(100), nullable=False)
 
-    excursions = relationship("ExcursionModel", secondary="agency_excursion_association", back_populates="agencies")
+    # excursions = relationship("ExcursionModel", secondary="agency_excursion_association", back_populates="agencies", cascade='all, delete-orphan')
+    # offers = relationship("OfferModel", secondary="agency_offer_association", back_populates="agencies", cascade='all, delete-orphan')
+    # packages = relationship("PackageModel", back_populates="agency", cascade='all, delete-orphan')
     
 class ExcursionModel(Base):
 
@@ -56,13 +58,17 @@ class ExcursionModel(Base):
     arrival_place = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
 
-    agencies = relationship("AgencyModel", secondary="agency_excursion_association", back_populates="excursions")
+    # agencies = relationship("AgencyModel", secondary="agency_excursion_association", back_populates="excursions", cascade='all, delete-orphan')
+    # extended_excursions = relationship("ExtendedExcursionModel", back_populates="excursion", cascade='all, delete-orphan')
 
 class ExtendedExcursionModel(ExcursionModel):
 
     __tablename__ = "extended_excursion"
 
     excursion_id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
+
+    # excursion = relationship("ExcursionModel", back_populates="extended_excursions", cascade='all, delete')
+    # packages = relationship("PackageModel", back_populates="extended_excursions", cascade='all, delete')
 
 class OfferModel(Base):
 
@@ -74,6 +80,7 @@ class OfferModel(Base):
 
     hotel_id = Column(Integer, ForeignKey('hotel.id'), nullable=False)
     hotel = relationship("HotelModel", back_populates="offers")
+    # agencies = relationship("AgencyModel", secondary="agency_offer_association", back_populates="offers", cascade='all, delete-orphan')
 
 class HotelModel(Base):
 
@@ -100,6 +107,10 @@ class AgencyExcursionAssociation(Base):
     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
     excursion_id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
 
+    # agency = relationship('AgencyModel', back_populates='excursions')
+    # excursion = relationship('ExcursionModel', back_populates='agencies')
+
+
 class AgencyOfferAssociation(Base):
 
     __tablename__ = "agency_offer_association"
@@ -107,6 +118,10 @@ class AgencyOfferAssociation(Base):
     agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
     offer_id = Column(Integer, ForeignKey('offer.id'), primary_key=True, nullable=False)
     price = Column(Float, nullable=False)
+
+    # agency = relationship('AgencyModel', back_populates='offers')
+    # offer = relationship('OfferModel', back_populates='agencies')
+
 
 class ExcursionReservation(Base):
 
@@ -138,6 +153,9 @@ class PackageModel(Base):
     __table_args__ = (
         UniqueConstraint('id', 'agency_id', 'extended_excursion_id'),
     )
+    # agency = relationship("AgencyModel", back_populates="packages", cascade='all, delete-orphan')
+    # extended_excursions = relationship("ExtendedExcursionModel", back_populates="packages", cascade='all, delete')
+
     # Establecer relación inversa
     # facility_associations = relationship('PackageFacilityAssociation', foreign_keys=[PackageFacilityAssociation.package_id, PackageFacilityAssociation.agency_id, PackageFacilityAssociation.extended_excursion_id])
 

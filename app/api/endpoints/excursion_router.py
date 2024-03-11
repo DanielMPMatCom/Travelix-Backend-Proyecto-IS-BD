@@ -16,3 +16,7 @@ async def list_excursion(db:Session=Depends(get_db), skip:int=0, limit:int=10):
 @router.post("/create", response_model=str)
 async def create_excursion(excursion_create: ExcursionSchema, db: Session = Depends(get_db)):
     return crud.create_excursion(db, excursion_create)
+
+@router.post("/delete", response_model=str)
+async def delete_excursion(excursion_delete: ExcursionSchema, db: Session = Depends(get_db)):
+    return crud.delete_excursion(db, excursion_delete)

@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
+from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import ExtendedExcursionModel
+from models import ExcursionModel, ExcursionReservation, AgencyExcursionAssociation, ExtendedExcursionModel, HotelExtendedExcursionAssociation, PackageModel
 from schemas import ExtendedExcursionSchema
 
 
@@ -16,6 +17,26 @@ def create_extended_excursion(db: Session, extended_excursion_create: ExtendedEx
     db.add(extended_excursion)
     db.commit()
     db.refresh(extended_excursion)
+
+    return "Success"
+
+
+def delete_extended_excursion(db: Session, extended_excursion_delete: ExtendedExcursionSchema):
+
+    extended_excursion = get_extended_excursion(db, extended_excursion_delete.id)
+
+    if extended_excursion is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended Excursion not found")
+    
+    db.execute(delete(AgencyExcursionAssociation).where(AgencyExcursionAssociation.excursion_id == extended_excursion_delete.id))
+    db.execute(delete(ExcursionReservation).where(ExcursionReservation.excursion_id == extended_excursion_delete.id))
+    db.execute(delete(HotelExtendedExcursionAssociation).where(HotelExtendedExcursionAssociation.extended_excursion_id == extended_excursion_delete.id))
+    db.execute(delete(PackageModel).where(PackageModel.extended_excursion_id == extended_excursion_delete.id))
+    db.execute(delete(ExtendedExcursionModel).where(ExtendedExcursionModel.excursion_id == extended_excursion_delete.id))
+    db.commit()
+
+    db.delete(extended_excursion)
+    db.commit()
 
     return "Success"
 
