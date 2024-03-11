@@ -6,8 +6,8 @@ from schemas import ExcursionSchema
 def list_excursion(db: Session, skip: int, limit: int):
     return db.query(ExcursionModel).offset(skip).limit(limit).all()
 
-def get_excursion(db: Session, name: str):
-    return db.query(ExcursionModel).filter(ExcursionModel.name == name).first()
+def get_excursion(db: Session, id: int):
+    return db.query(ExcursionModel).filter(ExcursionModel.id == id).first()
 
 def create_excursion(db: Session, excursion_create: ExcursionSchema):
     excursion = toModel(excursion_create)

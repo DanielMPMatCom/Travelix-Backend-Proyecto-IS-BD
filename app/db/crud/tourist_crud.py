@@ -9,6 +9,8 @@ import db.crud.auth_crud as auth
 def list_tourist(db: Session, skip: int, limit: int):
     return db.query(TouristModel).offset(skip).limit(limit).all()
 
+def get_tourist(db: Session, id: int):
+    return db.query(TouristModel).filter(TouristModel.id == id).first()
 
 def create_tourist(db: Session, tourist_create: TouristCreateSchema):
     user_exists = auth.get_user(db, tourist_create.username)

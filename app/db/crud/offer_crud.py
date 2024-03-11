@@ -13,7 +13,7 @@ def get_offer(db: Session, id: int):
     return db.query(OfferModel).filter(OfferModel.id == id).first()
 
 def create_offer(db: Session, offer_create: OfferSchema):
-    hotel_exists = hotel.get_hotel_by_id(db, offer_create.hotel_id)
+    hotel_exists = hotel.get_hotel(db, offer_create.hotel_id)
 
     if hotel_exists is None:
         raise HTTPException(

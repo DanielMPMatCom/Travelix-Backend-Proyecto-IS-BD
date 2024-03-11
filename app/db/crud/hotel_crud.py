@@ -9,7 +9,7 @@ def list_hotel(db: Session, skip: int, limit: int):
 def get_hotel_by_name(db: Session, name: str):
     return db.query(HotelModel).filter(HotelModel.name == name).first()
 
-def get_hotel_by_id(db: Session, id: int):
+def get_hotel(db: Session, id: int):
     return db.query(HotelModel).filter(HotelModel.id == id).first()
 
 def create_hotel(db: Session, hotel_create: HotelSchema):

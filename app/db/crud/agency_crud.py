@@ -6,8 +6,8 @@ from schemas import AgencySchema
 def list_agency(db: Session, skip: int, limit: int):
     return db.query(AgencyModel).offset(skip).limit(limit).all()
 
-def get_agency(db: Session, name: str):
-    return db.query(AgencyModel).filter(AgencyModel.name == name).first()
+def get_agency(db: Session, id: int):
+    return db.query(AgencyModel).filter(AgencyModel.id == id).first()
 
 def create_agency(db: Session, agency_create: AgencySchema):
     agency = toModel(agency_create)
