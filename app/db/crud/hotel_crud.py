@@ -29,9 +29,7 @@ def delete_hotel(db: Session, hotel_delete: HotelSchema):
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
     
-    # db.execute(delete(HotelExtendedExcursionAssociation).where(HotelExtendedExcursionAssociation.hotel_id == hotel_delete.id))
-    db.commit()
-
+    
     db.delete(hotel)
     db.commit()
 

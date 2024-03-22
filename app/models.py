@@ -81,7 +81,6 @@ class ExtendedExcursionModel(ExcursionModel):
     hotels = relationship("HotelExtendedExcursionAssociation", back_populates='extended_excursions', cascade="all, delete-orphan")
     excursion = relationship("ExcursionModel", back_populates="extended_excursions", cascade='all, delete-orphan', single_parent=True)
     agencies = relationship("PackageModel", back_populates="extended_excursions", cascade='all, delete-orphan')
-    # packages = relationship("PackageModel", back_populates="extended_excursions", cascade='all, delete')
 
 class OfferModel(Base):
 

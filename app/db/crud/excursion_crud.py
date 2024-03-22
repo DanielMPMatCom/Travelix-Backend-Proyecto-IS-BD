@@ -27,12 +27,6 @@ def delete_excursion(db: Session, excursion_delete: ExcursionSchema):
     if excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion not found")
     
-    # db.execute(delete(AgencyExcursionAssociation).where(AgencyExcursionAssociation.excursion_id == excursion_delete.id))
-    # db.execute(delete(ExcursionReservation).where(ExcursionReservation.excursion_id == excursion_delete.id))
-    # db.execute(delete(HotelExtendedExcursionAssociation).where(HotelExtendedExcursionAssociation.extended_excursion_id == excursion_delete.id))
-    # db.execute(delete(PackageModel).where(PackageModel.extended_excursion_id == excursion_delete.id))
-    # db.execute(delete(ExtendedExcursionModel).where(ExtendedExcursionModel.excursion_id == excursion_delete.id))
-    db.commit()
 
     db.delete(excursion)
     db.commit()

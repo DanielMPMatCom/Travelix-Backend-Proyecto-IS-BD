@@ -27,9 +27,6 @@ def delete_agency(db: Session, agency_delete: AgencySchema):
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    # db.execute(delete(AgencyExcursionAssociation).where(AgencyExcursionAssociation.agency_id == agency_delete.id))
-    # db.execute(delete(AgencyOfferAssociation).where(AgencyOfferAssociation.agency_id == agency_delete.id))
-    # db.execute(delete(PackageModel).where(PackageModel.agency_id == agency_delete.id))
     db.commit()
 
     db.delete(agency)

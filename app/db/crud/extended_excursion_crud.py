@@ -28,13 +28,7 @@ def delete_extended_excursion(db: Session, extended_excursion_delete: ExtendedEx
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended Excursion not found")
     
-    # db.execute(delete(AgencyExcursionAssociation).where(AgencyExcursionAssociation.excursion_id == extended_excursion_delete.id))
-    # db.execute(delete(ExcursionReservation).where(ExcursionReservation.excursion_id == extended_excursion_delete.id))
-    # db.execute(delete(HotelExtendedExcursionAssociation).where(HotelExtendedExcursionAssociation.extended_excursion_id == extended_excursion_delete.id))
-    # db.execute(delete(PackageModel).where(PackageModel.extended_excursion_id == extended_excursion_delete.id))
-    # db.execute(delete(ExtendedExcursionModel).where(ExtendedExcursionModel.excursion_id == extended_excursion_delete.id))
-    db.commit()
-
+    
     db.delete(extended_excursion)
     db.commit()
 
