@@ -27,12 +27,14 @@ class TouristCreateSchema(TouristSchema):
 class TouristTypeSchema(BaseModel):
     id: Optional[int]
     name: Optional[str] = None
+
 class AgencySchema(BaseModel):
     id : Optional[int]
     name: Optional[str] = None
     address: Optional[str] = None
     fax_number: Optional[int] = None
     email: Optional[str] = None
+    photo_url: Optional[str]
 
 class ExcursionSchema(BaseModel):
     id: Optional[int]
@@ -43,6 +45,7 @@ class ExcursionSchema(BaseModel):
     arrival_hour: Optional[time] = None
     arrival_place: Optional[str] = None
     price: Optional[float] = None
+    photo_url: Optional[str]
 
 class ExtendedExcursionSchema(ExcursionSchema):
     pass
@@ -59,6 +62,7 @@ class HotelSchema(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
     category: Optional[int] = None
+    photo_url: Optional[str]
 
 class FacilitySchema(BaseModel):
     id: Optional[int]
@@ -89,15 +93,22 @@ class PackageSchema(BaseModel):
     duration: Optional[int] = None
     agency_id: Optional[int] = None
     extended_excursion_id: Optional[int] = None
-
-# class PackageFacilityAssociationSchema(BaseModel):
-#     package_id: Optional[int]
-#     facility_id: Optional[int]
-#     agency_id: Optional[int]
-#     extended_excursion_id: Optional[int]
+    photo_url: Optional[str]
 
 class HotelExtendedExcursionAssociationSchema(BaseModel):
     hotel_id: Optional[int]
     extended_excursion_id: Optional[int]
     departure_date: Optional[date] = None
     arrival_date: Optional[date] = None
+class PackageFacilityAssociationSchema(BaseModel):
+    package_id: Optional[int]
+    facility_id: Optional[int]
+    agency_id: Optional[int]
+    extended_excursion_id: Optional[int]
+
+class PackageReservationSchema(BaseModel):
+    tourist_id: Optional[int]
+    package_id: Optional[int]
+    agency_id: Optional[int]
+    extended_excursion_id: Optional[int]
+    reservation_date: Optional[date] = None

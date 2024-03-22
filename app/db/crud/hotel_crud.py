@@ -22,38 +22,32 @@ def create_hotel(db: Session, hotel_create: HotelSchema):
 
     return "Success"
 
-# def delete_hotel(db: Session, hotel_delete: HotelSchema):
+def delete_hotel(db: Session, hotel_delete: HotelSchema):
 
-#     hotel = get_hotel(db, hotel_delete.id)
+    hotel = get_hotel(db, hotel_delete.id)
 
-#     if hotel is None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
+    if hotel is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
     
-#     db.execute(delete(HotelExtendedExcursionAssociation).where(HotelExtendedExcursionAssociation.hotel_id == hotel_delete.id))
-#     # db.execute(
-#     #     delete(AgencyOfferAssociation)
-#     #     .where(
-#     #         AgencyOfferAssociation.offer_id ==  
-#     #         )
-#     #     )
-#     offers = list_offer(db, )
-#     db.execute(delete(OfferModel).where(OfferModel.hotel_id == hotel_delete.id))
-#     db.commit()
+    # db.execute(delete(HotelExtendedExcursionAssociation).where(HotelExtendedExcursionAssociation.hotel_id == hotel_delete.id))
+    db.commit()
 
-#     db.delete(hotel)
-#     db.commit()
+    db.delete(hotel)
+    db.commit()
 
-#     return "Success"
+    return "Success"
 
 def toModel(schema:HotelSchema) -> HotelModel:
     return HotelModel(
         # id=schema.id,
                       name=schema.name,
                       address=schema.address,
-                      category=schema.category)
+                      category=schema.category,
+                      photo_url=schema.photo_url)
 
 def toShema(model:HotelModel) -> HotelSchema:
     return HotelSchema(id=model.id,
                        name=model.name,
                        address=model.address,
-                       category=model.category)
+                       category=model.category,
+                       photo_url=model.photo_url)

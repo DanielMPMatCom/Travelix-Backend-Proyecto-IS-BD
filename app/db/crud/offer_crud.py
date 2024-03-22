@@ -37,7 +37,7 @@ def delete_offer(db: Session, offer_delete: OfferSchema):
     if offer is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Offer not found")
     
-    db.execute(delete(AgencyOfferAssociation).where(AgencyOfferAssociation.offer_id == offer_delete.id))
+    # db.execute(delete(AgencyOfferAssociation).where(AgencyOfferAssociation.offer_id == offer_delete.id))
     db.commit()
 
     db.delete(offer)
