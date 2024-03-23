@@ -61,7 +61,8 @@ def toModel(schema:PackageSchema) -> PackageModel:
                         extended_excursion_id=schema.extended_excursion_id,
                         duration=schema.duration,
                         description=schema.description,
-                        price=schema.price)
+                        price=schema.price,
+                        photo_url=schema.photo_url)
 
 def toShema(model:PackageModel) -> PackageSchema:
     return PackageSchema(id=model.id,
@@ -69,4 +70,5 @@ def toShema(model:PackageModel) -> PackageSchema:
                          extended_excursion_id=model.extended_excursion_id,
                          duration=model.duration,
                          description=model.description,
-                         price=model.price)
+                         price=model.price,
+                         photo_url=model.photo_url)

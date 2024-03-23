@@ -27,9 +27,6 @@ def delete_agency(db: Session, agency_delete: AgencySchema):
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    db.execute(delete(AgencyExcursionAssociation).where(AgencyExcursionAssociation.agency_id == agency_delete.id))
-    db.execute(delete(AgencyOfferAssociation).where(AgencyOfferAssociation.agency_id == agency_delete.id))
-    db.execute(delete(PackageModel).where(PackageModel.agency_id == agency_delete.id))
     db.commit()
 
     db.delete(agency)
@@ -43,11 +40,13 @@ def toModel(schema:AgencySchema) -> AgencyModel:
                        name=schema.name, 
                        address=schema.address, 
                        fax_number=schema.fax_number, 
-                       email=schema.email)
+                       email=schema.email,
+                       photo_url=schema.photo_url)
 
 def toShema(model:AgencyModel) -> AgencySchema:
     return AgencySchema(id=model.id, 
                         name=model.name, 
                         address=model.address, 
                         fax_number=model.fax_number, 
-                        email=model.email)
+                        email=model.email,
+                        photo_url=model.photo_url)

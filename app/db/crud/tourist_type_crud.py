@@ -26,9 +26,6 @@ def delete_tourist_type(db: Session, tourist_type_delete: TouristTypeSchema):
     if tourist_type is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist type not found")
     
-    db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_type_id == tourist_type_delete.id))
-    db.commit()
-
     db.delete(tourist_type)
     db.commit()
 

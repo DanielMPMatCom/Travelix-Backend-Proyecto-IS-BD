@@ -40,8 +40,8 @@ def delete_tourist(db: Session, tourist_delete: TouristCreateSchema):
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
     
-    db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_id == tourist_delete.id))
-    db.execute(delete(ExcursionReservation).where(ExcursionReservation.tourist_id == tourist_delete.id))
+    # db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_id == tourist_delete.id))
+    # db.execute(delete(ExcursionReservation).where(ExcursionReservation.tourist_id == tourist_delete.id))
 
     db.delete(tourist)
     db.commit()
