@@ -34,7 +34,7 @@ class AgencySchema(BaseModel):
     address: Optional[str] = None
     fax_number: Optional[int] = None
     email: Optional[str] = None
-    photo_url: Optional[str]
+    photo_url: Optional[str] = None
 
 class ExcursionSchema(BaseModel):
     id: Optional[int]

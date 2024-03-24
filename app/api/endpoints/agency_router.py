@@ -20,3 +20,7 @@ async def create_agency(agency_create: AgencySchema, db: Session = Depends(get_d
 @router.post("/delete", response_model=str)
 async def delete_agency(agency_delete: AgencySchema, db: Session = Depends(get_db)):
     return crud.delete_agency(db, agency_delete)
+
+@router.post("/update", response_model=str)
+async def update_agency(agency_update: AgencySchema, db: Session = Depends(get_db)):
+    return crud.update_agency(db, agency_update)
