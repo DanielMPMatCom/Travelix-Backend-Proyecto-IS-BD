@@ -3,9 +3,6 @@ from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from models import AgencyModel, PackageReservation, AgencyExcursionAssociation, ExcursionReservation, AgencyOfferAssociation, PackageModel
 from schemas import AgencySchema
-# from db.crud.package_reservation_crud import get_package_reservation_by_agency
-# from db.crud.agency_excursion_crud import get_agency_excursion_by_agency
-# from db.crud.excursion_reservation_crud import get_excursion_reservation_by_excursion
 
 
 
@@ -30,6 +27,19 @@ def delete_agency(db: Session, agency_delete: AgencySchema):
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
+    agency_in_package_reservation = db.query(PackageReservation).filter(PackageReservation.agency_id == agency_delete.id).first()
+
+    if agency_in_package_reservation is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Agency because is is ivolved in a Package Reservation")
+    
+    excursions_associated_with_agency = db.query(AgencyExcursionAssociation).filter(AgencyExcursionAssociation.agency_id == agency_delete.id).all()
+
+    for excursion in excursions_associated_with_agency:
+        print(excursion)
+        excursion_reservation = db.query(ExcursionReservation).filter(ExcursionReservation.excursion_id == excursion.excursion_id).first()
+        if excursion_reservation is not None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Agency because is is ivolved in an Excursion Reservation")
+    
 
     db.delete(agency)
     db.commit()
@@ -44,19 +54,17 @@ def update_agency(db: Session, agency_update: AgencySchema):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
     agency_in_package_reservation = db.query(PackageReservation).filter(PackageReservation.agency_id == agency_update.id).first()
-    # agency_in_package_reservation = get_package_reservation_by_agency(db, agency_update.id)
 
     if agency_in_package_reservation is not None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this agency because is is ivolved in a Package Reservation")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Agency because is is ivolved in a Package Reservation")
     
     excursions_associated_with_agency = db.query(AgencyExcursionAssociation).filter(AgencyExcursionAssociation.agency_id == agency_update.id).all()
-    # excursions_associated_with_agency = get_agency_excursion_by_agency(db, agency_update.id)
 
     for excursion in excursions_associated_with_agency:
+        print(excursion)
         excursion_reservation = db.query(ExcursionReservation).filter(ExcursionReservation.excursion_id == excursion.excursion_id).first()
-        # excursion_reservation = get_excursion_reservation_by_excursion(db, excursion.excursion_id)
         if excursion_reservation is not None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this agency because is is ivolved in an Excursion Reservation")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Agency because is is ivolved in an Excursion Reservation")
     
     if agency_update.name is not None:
         agency.name = agency_update.name

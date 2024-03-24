@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import ExcursionModel, ExcursionReservation, AgencyExcursionAssociation, ExtendedExcursionModel, HotelExtendedExcursionAssociation, PackageModel
+from models import ExtendedExcursionModel, PackageReservation, ExcursionModel, ExcursionReservation, AgencyExcursionAssociation, HotelExtendedExcursionAssociation, PackageModel
 from schemas import ExtendedExcursionSchema
 
 
@@ -28,8 +28,43 @@ def delete_extended_excursion(db: Session, extended_excursion_delete: ExtendedEx
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended Excursion not found")
     
+    extended_excursion_in_package_reservation = db.query(PackageReservation).filter(PackageReservation.extended_excursion_id == extended_excursion_delete.id).first()
+    if extended_excursion_in_package_reservation is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Extended Excursion because is is ivolved in a Package Reservation")
     
     db.delete(extended_excursion)
+    db.commit()
+
+    return "Success"
+
+def update_extended_excursion(db: Session, extended_excursion_update: ExtendedExcursionSchema):
+
+    extended_excursion = get_extended_excursion(db, extended_excursion_update.id)
+
+    if extended_excursion is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended Excursion not found")
+    
+    extended_excursion_in_package_reservation = db.query(PackageReservation).filter(PackageReservation.extended_excursion_id == extended_excursion_update.id).first()
+    if extended_excursion_in_package_reservation is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Extended Excursion because is is ivolved in a Package Reservation")
+    
+    if extended_excursion_update.departure_day is not None:
+        extended_excursion.departure_day = extended_excursion_update.departure_day
+    if extended_excursion_update.departure_hour is not None:
+        extended_excursion.departure_hour = extended_excursion_update.departure_hour
+    if extended_excursion_update.departure_place is not None:
+        extended_excursion.departure_place = extended_excursion_update.departure_place
+    if extended_excursion_update.arrival_day is not None:
+        extended_excursion.arrival_day = extended_excursion_update.arrival_day
+    if extended_excursion_update.arrival_hour is not None:
+        extended_excursion.arrival_hour = extended_excursion_update.arrival_hour
+    if extended_excursion_update.arrival_place is not None:
+        extended_excursion.arrival_place = extended_excursion_update.arrival_place
+    if extended_excursion_update.price is not None:
+        extended_excursion.price = extended_excursion_update.price
+    if extended_excursion_update.photo_url is not None:
+        extended_excursion.photo_url = extended_excursion_update.photo_url
+
     db.commit()
 
     return "Success"

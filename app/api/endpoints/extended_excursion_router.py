@@ -20,3 +20,7 @@ async def create_extended_excursion(extended_excursion_create: ExtendedExcursion
 @router.post("/delete", response_model=str)
 async def delete_extended_excursion(extended_excursion_delete: ExtendedExcursionSchema, db: Session = Depends(get_db)):
     return crud.delete_extended_excursion(db, extended_excursion_delete)
+
+@router.post("/update", response_model=str)
+async def update_extended_excursion(extended_excursion_update: ExtendedExcursionSchema, db: Session = Depends(get_db)):
+    return crud.update_extended_excursion(db, extended_excursion_update)

@@ -45,7 +45,7 @@ class ExcursionSchema(BaseModel):
     arrival_hour: Optional[time] = None
     arrival_place: Optional[str] = None
     price: Optional[float] = None
-    photo_url: Optional[str]
+    photo_url: Optional[str] = None
 
 class ExtendedExcursionSchema(ExcursionSchema):
     pass
@@ -62,7 +62,7 @@ class HotelSchema(BaseModel):
     name: Optional[str] = None
     address: Optional[str] = None
     category: Optional[int] = None
-    photo_url: Optional[str]
+    photo_url: Optional[str] = None
 
 class FacilitySchema(BaseModel):
     id: Optional[int]
@@ -93,7 +93,7 @@ class PackageSchema(BaseModel):
     duration: Optional[int] = None
     agency_id: Optional[int] = None
     extended_excursion_id: Optional[int] = None
-    photo_url: Optional[str]
+    photo_url: Optional[str] = None
 
 class HotelExtendedExcursionAssociationSchema(BaseModel):
     hotel_id: Optional[int]

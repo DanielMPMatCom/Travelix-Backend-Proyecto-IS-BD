@@ -31,6 +31,21 @@ def delete_facility(db: Session, facility_delete: FacilitySchema):
 
     return "Success"
 
+def update_facility(db: Session, facility_update: FacilitySchema):
+
+    facility = get_facility(db, facility_update.id)
+
+    if facility is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Facility not found")
+    
+    if facility_update.description is not None:
+        facility.description = facility_update.description
+
+    db.commit()
+
+    return "Success"
+
+
 def toModel(schema:FacilitySchema) -> FacilityModel:
     return FacilityModel(
         # id=schema.id,
