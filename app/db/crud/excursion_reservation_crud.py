@@ -14,6 +14,9 @@ def list_excursion_reservation(db: Session, skip: int, limit: int):
 def get_excursion_reservation(db: Session, excursion_id: int, tourist_id: int, reservation_date: date):
     return db.query(ExcursionReservation).filter(ExcursionReservation.excursion_id == excursion_id, ExcursionReservation.tourist_id == tourist_id, ExcursionReservation.reservation_date == reservation_date).first()
 
+def get_excursion_reservation_by_excursion(db: Session, excursion_id):
+    return db.query(ExcursionReservation).filter(ExcursionReservation.excursion_id == excursion_id).first()
+
 def create_excursion_reservation(db: Session, excursion_reservation_create: ExcursionReservationSchema):
 
     excursion = get_excursion(db, excursion_reservation_create.excursion_id)

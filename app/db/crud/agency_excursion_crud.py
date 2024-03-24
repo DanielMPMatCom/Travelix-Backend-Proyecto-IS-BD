@@ -13,6 +13,9 @@ def list_agency_excursion(db: Session, skip: int, limit: int):
 def get_agency_excursion(db: Session, agency_id: int, excursion_id: int):
     return db.query(AgencyExcursionAssociation).filter(AgencyExcursionAssociation.agency_id == agency_id, AgencyExcursionAssociation.excursion_id == excursion_id).first()
 
+def get_agency_excursion_by_agency(db: Session, agency_id: int):
+    return db.query(AgencyExcursionAssociation).filter(AgencyExcursionAssociation.agency_id == agency_id).all()
+
 def create_agency_excursion(db: Session, agency_excursion_create: AgencyExcursionAssociation):
 
     agency = get_agency(db, agency_excursion_create.agency_id)

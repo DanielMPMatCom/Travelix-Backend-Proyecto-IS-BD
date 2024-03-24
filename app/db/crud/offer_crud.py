@@ -18,7 +18,7 @@ def create_offer(db: Session, offer_create: OfferSchema):
 
     if hotel_exists is None:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Hotel does not exist",
         )
     
@@ -42,6 +42,26 @@ def delete_offer(db: Session, offer_delete: OfferSchema):
 
     return "Success"
 
+def update_offer(db: Session, offer_update: OfferSchema):
+
+    offer = get_offer(db, offer_update.id)
+
+    if offer is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Offer not found")
+    
+    hotel_exists = hotel.get_hotel(db, offer_update.hotel_id)
+
+    if offer_update.hotel_id is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update hotel_id")
+    if offer_update.price is not None:
+        offer.price = offer_update.price
+    if offer_update.description is not None:
+        offer.description = offer_update.description
+
+    db.commit()
+
+    return "Success"
+ 
 def toModel(schema:OfferSchema) -> OfferModel:
     return OfferModel(
         # id=schema.id,

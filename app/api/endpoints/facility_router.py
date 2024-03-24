@@ -20,3 +20,7 @@ async def create_facility(facility_create: FacilitySchema, db: Session = Depends
 @router.post("/delete", response_model=str)
 async def delete_facility(facility_delete: FacilitySchema, db: Session = Depends(get_db)):
     return crud.delete_facility(db, facility_delete)
+
+@router.post("/update", response_model=str)
+async def update_facility(facility_update: FacilitySchema, db: Session = Depends(get_db)):
+    return crud.update_facility(db, facility_update)
