@@ -9,8 +9,8 @@ from db.crud.extended_excursion_crud import get_extended_excursion
 def list_package(db: Session, skip: int, limit: int):
     return db.query(PackageModel).offset(skip).limit(limit).all()
 
-def get_package(db: Session, agency_id: int, extended_excursion_id: int):
-    return db.query(PackageModel).filter(PackageModel.agency_id == agency_id, PackageModel.extended_excursion_id == extended_excursion_id).first()
+def get_package(db: Session, package_id: int):
+    return db.query(PackageModel).filter(PackageModel.id == package_id).first()
 
 def create_package(db: Session, package_create: PackageSchema):
 
@@ -22,7 +22,7 @@ def create_package(db: Session, package_create: PackageSchema):
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     
-    package = get_package(db, package_create.agency_id, package_create.extended_excursion_id)
+    package = get_package(db, package_create.id)
     if package is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Package already exists")
 
@@ -44,7 +44,7 @@ def delete_package(db: Session, package_delete: PackageSchema):
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     
-    package = get_package(db, package_delete.agency_id, package_delete.extended_excursion_id)
+    package = get_package(db, package_delete.id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
@@ -67,7 +67,7 @@ def update_package(db: Session, package_update: PackageSchema):
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     
-    package = get_package(db, package_update.agency_id, package_update.extended_excursion_id)
+    package = get_package(db, package_update.id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
     

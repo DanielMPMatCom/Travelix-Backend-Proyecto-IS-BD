@@ -215,8 +215,6 @@ class PackageReservation(Base):
 
     tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
-    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
-    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.excursion_id'), nullable=False)
     reservation_date = Column(Date, primary_key=True, nullable=False)
 
     packages = relationship("PackageModel", back_populates='tourists')
@@ -227,8 +225,6 @@ class PackageFacilityAssociation(Base):
     __tablename__ = "package_facility_association"
 
     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
-    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
-    extended_excursion_id = Column(Integer, ForeignKey('extended_excursion.excursion_id'), nullable=False)
     facility_id = Column(Integer, ForeignKey('facility.id'), primary_key=True, nullable=False)
 
     packages = relationship('PackageModel', back_populates="facilities")
