@@ -21,7 +21,7 @@ def create_agency(db: Session, agency_create: AgencySchema):
     return "Success"
 
 def delete_agency(db: Session, agency_delete_id: int):
-
+    print(agency_delete_id)
     agency = get_agency(db, agency_delete_id)
 
     if agency is None:
@@ -47,7 +47,7 @@ def delete_agency(db: Session, agency_delete_id: int):
     return "Success"
 
 def update_agency(db: Session, agency_update: AgencySchema):
-
+    print(agency_update.id)
     agency = get_agency(db, agency_update.id)
 
     if agency is None:

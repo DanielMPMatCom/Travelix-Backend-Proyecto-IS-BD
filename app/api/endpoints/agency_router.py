@@ -24,3 +24,13 @@ async def delete_agency(agency_id: int, db: Session = Depends(get_db)):
 @router.post("/update", response_model=str)
 async def update_agency(agency_update: AgencySchema, db: Session = Depends(get_db)):
     return crud.update_agency(db, agency_update)
+
+
+@router.get("/get/{agency_id}", response_model=AgencySchema)
+async def get_agency(agency_id: int, db: Session = Depends(get_db)):
+    agency_model = crud.get_agency(db, agency_id)
+    
+    if agency_model is None:
+        return ""
+
+    return crud.toShema(agency_model)
