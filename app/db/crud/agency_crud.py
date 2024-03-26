@@ -21,7 +21,7 @@ def create_agency(db: Session, agency_create: AgencySchema):
     return "Success"
 
 def delete_agency(db: Session, agency_delete_id: int):
-
+    print(agency_delete_id)
     agency = get_agency(db, agency_delete_id)
 
     if agency is None:
@@ -47,7 +47,7 @@ def delete_agency(db: Session, agency_delete_id: int):
     return "Success"
 
 def update_agency(db: Session, agency_update: AgencySchema):
-
+    print(agency_update.id)
     agency = get_agency(db, agency_update.id)
 
     if agency is None:
@@ -66,15 +66,15 @@ def update_agency(db: Session, agency_update: AgencySchema):
         if excursion_reservation is not None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Agency because is is ivolved in an Excursion Reservation")
     
-    if agency_update.name is not None:
+    if agency_update.name is not None or agency_update.name == "":
         agency.name = agency_update.name
-    if agency_update.address is not None:
+    if agency_update.address is not None or agency_update.address == "":
         agency.address = agency_update.address
-    if agency_update.fax_number is not None:
+    if agency_update.fax_number is not None or agency_update.fax_number == 0:
         agency.fax_number = agency_update.fax_number
-    if agency_update.email is not None:
+    if agency_update.email is not None or agency_update.email == "":
         agency.email = agency_update.email
-    if agency_update.photo_url is not None:
+    if agency_update.photo_url is not None or agency_update.photo_url == "":
         agency.photo_url = agency_update.photo_url
 
     db.commit()
