@@ -66,15 +66,15 @@ def update_agency(db: Session, agency_update: AgencySchema):
         if excursion_reservation is not None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Agency because is is ivolved in an Excursion Reservation")
     
-    if agency_update.name is not None or agency_update.name == "":
+    if agency_update.name is not None:
         agency.name = agency_update.name
-    if agency_update.address is not None or agency_update.address == "":
+    if agency_update.address is not None:
         agency.address = agency_update.address
-    if agency_update.fax_number is not None or agency_update.fax_number == 0:
+    if agency_update.fax_number is not None:
         agency.fax_number = agency_update.fax_number
-    if agency_update.email is not None or agency_update.email == "":
+    if agency_update.email is not None:
         agency.email = agency_update.email
-    if agency_update.photo_url is not None or agency_update.photo_url == "":
+    if agency_update.photo_url is not None:
         agency.photo_url = agency_update.photo_url
 
     db.commit()
