@@ -29,7 +29,7 @@ def create_package_facility(db: Session, package_facility_create: PackageFacilit
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    package = get_package(db, package_facility_create.package_id, package_facility_create.agency_id, package_facility_create.extended_excursion_id)
+    package = get_package(db, package_facility_create.agency_id, package_facility_create.extended_excursion_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
     
@@ -51,7 +51,7 @@ def create_package_facility(db: Session, package_facility_create: PackageFacilit
 
 def delete_package_facility(db: Session, package_facility_delete: PackageFacilityAssociationSchema):
 
-    package = get_package(db, package_facility_delete.package_id, package_facility_delete.agency_id, package_facility_delete.extended_excursion_id)
+    package = get_package(db, package_facility_delete.agency_id, package_facility_delete.extended_excursion_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 

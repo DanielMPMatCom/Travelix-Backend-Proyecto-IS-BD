@@ -20,3 +20,7 @@ async def create_offer(offer_create: OfferSchema, db: Session = Depends(get_db))
 @router.post("/delete", response_model=str)
 async def delete_offer(offer_delete: OfferSchema, db: Session = Depends(get_db)):
     return crud.delete_offer(db, offer_delete)
+
+@router.post("/update", response_model=str)
+async def update_offer(offer_update: OfferSchema, db: Session = Depends(get_db)):
+    return crud.update_offer(db, offer_update)

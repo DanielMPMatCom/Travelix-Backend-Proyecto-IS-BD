@@ -16,6 +16,9 @@ def list_package_reservation(db: Session, skip: int, limit: int):
 def get_package_reservation(db: Session, package_id: int, tourist_id: int, reservation_date: date):
     return db.query(PackageReservation).filter(PackageReservation.package_id == package_id, PackageReservation.tourist_id == tourist_id, PackageReservation.reservation_date == reservation_date).first()
 
+def get_package_reservation_by_agency(db: Session, agency_id: int):
+    return db.query(PackageReservation).filter(PackageReservation.agency_id == agency_id).first()
+
 def create_package_reservation(db: Session, package_reservation_create: PackageReservationSchema):
 
     excursion = get_extended_excursion(db, package_reservation_create.extended_excursion_id)
@@ -26,7 +29,7 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    package = get_package(db, package_reservation_create.package_id, package_reservation_create.agency_id, package_reservation_create.extended_excursion_id)
+    package = get_package(db, package_reservation_create.agency_id, package_reservation_create.extended_excursion_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
     
@@ -47,7 +50,7 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
 
 def delete_package_reservation(db: Session, package_reservation_delete: PackageReservationSchema):
 
-    package = get_package(db, package_reservation_delete.package_id, package_reservation_delete.agency_id, package_reservation_delete.extended_excursion_id)
+    package = get_package(db, package_reservation_delete.agency_id, package_reservation_delete.extended_excursion_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
