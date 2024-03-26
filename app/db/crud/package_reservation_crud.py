@@ -2,8 +2,6 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from models import PackageReservation
 from schemas import PackageReservationSchema
-from db.crud.agency_crud import get_agency
-from db.crud.extended_excursion_crud import get_extended_excursion
 from db.crud.package_crud import get_package
 from db.crud.tourist_crud import get_tourist
 from datetime import date
@@ -16,20 +14,9 @@ def list_package_reservation(db: Session, skip: int, limit: int):
 def get_package_reservation(db: Session, package_id: int, tourist_id: int, reservation_date: date):
     return db.query(PackageReservation).filter(PackageReservation.package_id == package_id, PackageReservation.tourist_id == tourist_id, PackageReservation.reservation_date == reservation_date).first()
 
-def get_package_reservation_by_agency(db: Session, agency_id: int):
-    return db.query(PackageReservation).filter(PackageReservation.agency_id == agency_id).first()
-
 def create_package_reservation(db: Session, package_reservation_create: PackageReservationSchema):
 
-    excursion = get_extended_excursion(db, package_reservation_create.extended_excursion_id)
-    if excursion is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion not found")
-    
-    agency = get_agency(db, package_reservation_create.agency_id)
-    if agency is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
-    
-    package = get_package(db, package_reservation_create.agency_id, package_reservation_create.extended_excursion_id)
+    package = get_package(db, package_reservation_create.package_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
     
@@ -50,7 +37,7 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
 
 def delete_package_reservation(db: Session, package_reservation_delete: PackageReservationSchema):
 
-    package = get_package(db, package_reservation_delete.agency_id, package_reservation_delete.extended_excursion_id)
+    package = get_package(db, package_reservation_delete.package_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
@@ -71,13 +58,9 @@ def delete_package_reservation(db: Session, package_reservation_delete: PackageR
 def toModel(schema:PackageReservationSchema) -> PackageReservation:
     return PackageReservation(package_id=schema.package_id,
                                 tourist_id=schema.tourist_id,
-                                reservation_date=schema.reservation_date,
-                                agency_id=schema.agency_id,
-                                extended_excursion_id=schema.extended_excursion_id)
+                                reservation_date=schema.reservation_date)
 
 def toShema(model:PackageReservation) -> PackageReservationSchema:
     return PackageReservationSchema(package_id=model.package_id,
                                       tourist_id=model.tourist_id,
-                                      reservation_date=model.reservation_date,
-                                agency_id=model.agency_id,
-                                extended_excursion_id=model.extended_excursion_id)
+                                      reservation_date=model.reservation_date)
