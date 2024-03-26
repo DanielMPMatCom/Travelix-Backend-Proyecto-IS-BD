@@ -29,7 +29,7 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    package = get_package(db, package_reservation_create.package_id, package_reservation_create.agency_id, package_reservation_create.extended_excursion_id)
+    package = get_package(db, package_reservation_create.agency_id, package_reservation_create.extended_excursion_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
     
@@ -50,7 +50,7 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
 
 def delete_package_reservation(db: Session, package_reservation_delete: PackageReservationSchema):
 
-    package = get_package(db, package_reservation_delete.package_id, package_reservation_delete.agency_id, package_reservation_delete.extended_excursion_id)
+    package = get_package(db, package_reservation_delete.agency_id, package_reservation_delete.extended_excursion_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
