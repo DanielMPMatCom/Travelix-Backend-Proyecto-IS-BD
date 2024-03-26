@@ -103,12 +103,8 @@ class HotelExtendedExcursionAssociationSchema(BaseModel):
 class PackageFacilityAssociationSchema(BaseModel):
     package_id: Optional[int]
     facility_id: Optional[int]
-    agency_id: Optional[int]
-    extended_excursion_id: Optional[int]
 
 class PackageReservationSchema(BaseModel):
     tourist_id: Optional[int]
     package_id: Optional[int]
-    agency_id: Optional[int]
-    extended_excursion_id: Optional[int]
     reservation_date: Optional[date] = None
