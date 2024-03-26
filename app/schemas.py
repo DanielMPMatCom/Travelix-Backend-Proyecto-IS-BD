@@ -11,7 +11,7 @@ class TokenData(BaseModel):
     username: Optional[str] = None
 class UserSchema(BaseModel):
     disabled: Optional[bool] = None
-    id: Optional[int]
+    id: Optional[int] = None
     username: Optional[str] = None
     name: Optional[str] = None
     phone: Optional[str] = None
@@ -25,11 +25,11 @@ class TouristCreateSchema(TouristSchema):
     password: str
     
 class TouristTypeSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: Optional[str] = None
 
 class AgencySchema(BaseModel):
-    id : Optional[int]
+    id : Optional[int] = None
     name: Optional[str] = None
     address: Optional[str] = None
     fax_number: Optional[int] = None
@@ -37,7 +37,7 @@ class AgencySchema(BaseModel):
     photo_url: Optional[str] = None
 
 class ExcursionSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     departure_day: Optional[str] = None
     departure_hour: Optional[time] = None
     departure_place: Optional[str] = None
@@ -52,20 +52,20 @@ class ExtendedExcursionSchema(ExcursionSchema):
     # excursion_id: Optional[int]
 
 class OfferSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     price: Optional[float] = None
     description: Optional[str] = None
     hotel_id: Optional[int] = None
 
 class HotelSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     name: Optional[str] = None
     address: Optional[str] = None
     category: Optional[int] = None
     photo_url: Optional[str] = None
 
 class FacilitySchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     description: Optional[str] = None
 
 class AgencyOfferAssociationSchema(BaseModel):
@@ -87,7 +87,7 @@ class TouristTypeTouristAssociationSchema(BaseModel):
     tourist_type_id: Optional[int]
 
 class PackageSchema(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     price: Optional[float] = None
     description: Optional[str] = None
     duration: Optional[int] = None
