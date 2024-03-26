@@ -15,6 +15,7 @@ from api.endpoints.extended_excursion_router import router as extended_excursion
 from api.endpoints.hotel_extended_excursion_router import router as hotel_extended_excursion_router
 from api.endpoints.package_facility_router import router as package_facility_router
 from api.endpoints.package_reservation_router import router as package_reservation_router
+from api.endpoints.statistics_router import router as statistics_router
 
 router = APIRouter()
 router.include_router(agency_router)
@@ -33,3 +34,4 @@ router.include_router(extended_excursion_router)
 router.include_router(hotel_extended_excursion_router)
 router.include_router(package_facility_router)
 router.include_router(package_reservation_router)
+router.include_router(statistics_router)
