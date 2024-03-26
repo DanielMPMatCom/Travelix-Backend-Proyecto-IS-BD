@@ -20,19 +20,19 @@ def create_agency(db: Session, agency_create: AgencySchema):
 
     return "Success"
 
-def delete_agency(db: Session, agency_delete: AgencySchema):
+def delete_agency(db: Session, agency_delete_id: int):
 
-    agency = get_agency(db, agency_delete.id)
+    agency = get_agency(db, agency_delete_id)
 
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    agency_in_package_reservation = db.query(PackageReservation).filter(PackageReservation.agency_id == agency_delete.id).first()
+    agency_in_package_reservation = db.query(PackageReservation).filter(PackageReservation.agency_id == agency_delete_id).first()
 
     if agency_in_package_reservation is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Agency because is is ivolved in a Package Reservation")
     
-    excursions_associated_with_agency = db.query(AgencyExcursionAssociation).filter(AgencyExcursionAssociation.agency_id == agency_delete.id).all()
+    excursions_associated_with_agency = db.query(AgencyExcursionAssociation).filter(AgencyExcursionAssociation.agency_id == agency_delete_id).all()
 
     for excursion in excursions_associated_with_agency:
         print(excursion)
