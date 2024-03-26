@@ -90,6 +90,15 @@ def update_package(db: Session, package_update: PackageSchema):
 
     return "Success"
 
+from models import HotelModel
+
+def get_package_hotels(db:Session, package_id:int):
+    package = get_package(db, package_id)
+    if package is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
+    
+    
+
 
 def toModel(schema:PackageSchema) -> PackageModel:
     return PackageModel(
