@@ -17,6 +17,6 @@ async def list_hotel_extended_excursion(db:Session=Depends(get_db), skip:int=0, 
 async def create_hotel_extended_excursion(hotel_extended_excursion_create: HotelExtendedExcursionAssociationSchema, db: Session = Depends(get_db)):
     return crud.create_hotel_extended_excursion(db, hotel_extended_excursion_create)
 
-@router.post("/delete", response_model=str)
-async def delete_hotel_extended_excursion(hotel_extended_excursion_delete: HotelExtendedExcursionAssociationSchema, db: Session = Depends(get_db)):
-    return crud.delete_hotel_extended_excursion(db, hotel_extended_excursion_delete)
+@router.get("/delete{hotel_id}{extended_excursion_id}", response_model=str)
+async def delete_hotel_extended_excursion(hotel_id: int, extended_excursion_id: int, db: Session = Depends(get_db)):
+    return crud.delete_hotel_extended_excursion(db, hotel_id, extended_excursion_id)

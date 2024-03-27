@@ -68,7 +68,6 @@ class ExcursionModel(Base):
 
 
     agencies = relationship("AgencyExcursionAssociation", back_populates="excursions", cascade="all, delete-orphan")
-    extended_excursions = relationship("ExtendedExcursionModel", back_populates="excursion", cascade='all, delete-orphan')
     tourists = relationship("ExcursionReservation", back_populates="excursions", cascade='all, delete-orphan')
 
 class ExtendedExcursionModel(ExcursionModel):
@@ -79,7 +78,6 @@ class ExtendedExcursionModel(ExcursionModel):
 
     
     hotels = relationship("HotelExtendedExcursionAssociation", back_populates='extended_excursions', cascade="all, delete-orphan")
-    excursion = relationship("ExcursionModel", back_populates="extended_excursions", cascade='all, delete-orphan', single_parent=True)
     agencies = relationship("PackageModel", back_populates="extended_excursions", cascade='all, delete-orphan')
 
 class OfferModel(Base):
@@ -202,9 +200,6 @@ class PackageModel(Base):
     photo_url = Column(String(200))
 
 
-    # __table_args__ = (
-    #     UniqueConstraint('id', 'agency_id', 'extended_excursion_id'),
-    # )
     agency = relationship("AgencyModel", back_populates="extended_excursions")
     extended_excursions = relationship("ExtendedExcursionModel", back_populates="agencies")
     tourists = relationship('PackageReservation', back_populates='packages', cascade="all, delete-orphan")

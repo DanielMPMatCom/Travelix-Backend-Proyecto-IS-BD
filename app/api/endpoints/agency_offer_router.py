@@ -17,9 +17,9 @@ async def list_agency_offer(db:Session=Depends(get_db), skip:int=0, limit:int=10
 async def create_agency_offer(agency_offer_create: AgencyOfferAssociationSchema, db: Session = Depends(get_db)):
     return crud.create_agency_offer(db, agency_offer_create)
 
-@router.post("/delete", response_model=str)
-async def delete_agency_offer(agency_offer_delete: AgencyOfferAssociationSchema, db: Session = Depends(get_db)):
-    return crud.delete_agency_offer(db, agency_offer_delete)
+@router.get("/delete{agency_id}{offer_id}", response_model=str)
+async def delete_agency_offer(agency_id: int, offer_id:int, db: Session = Depends(get_db)):
+    return crud.delete_agency_offer(db, agency_id, offer_id)
 
 @router.post("/update", response_model=str)
 async def update_agency_offer(agency_offer_update: AgencyOfferAssociationSchema, db: Session = Depends(get_db)):

@@ -19,9 +19,9 @@ def create_tourist_type(db: Session, tourist_type_create: TouristTypeSchema):
 
     return "Success"
 
-def delete_tourist_type(db: Session, tourist_type_delete: TouristTypeSchema):
+def delete_tourist_type(db: Session, tourist_type_delete_id: int):
 
-    tourist_type = get_tourist_type(db, tourist_type_delete.id)
+    tourist_type = get_tourist_type(db, tourist_type_delete_id)
 
     if tourist_type is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist type not found")

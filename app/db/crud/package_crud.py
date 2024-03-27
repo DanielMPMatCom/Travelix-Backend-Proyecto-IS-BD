@@ -33,22 +33,13 @@ def create_package(db: Session, package_create: PackageSchema):
 
     return "Success"
 
-def delete_package(db: Session, package_delete: PackageSchema):
+def delete_package(db: Session, package_id: int):
 
-
-    agency = get_agency(db, package_delete.agency_id)
-    if agency is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
-    
-    extended_excursion = get_extended_excursion(db, package_delete.extended_excursion_id)
-    if extended_excursion is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
-    
-    package = get_package(db, package_delete.id)
+    package = get_package(db, package_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
-    package_in_reservation = db.query(PackageReservation).filter(PackageReservation.package_id == package_delete.id).first()
+    package_in_reservation = db.query(PackageReservation).filter(PackageReservation.package_id == package_id).first()
     if package_in_reservation is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Package because is is ivolved in a Package Reservation")
 

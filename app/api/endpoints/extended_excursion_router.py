@@ -17,9 +17,9 @@ async def list_extended_excursion(db:Session=Depends(get_db), skip:int=0, limit:
 async def create_extended_excursion(extended_excursion_create: ExtendedExcursionSchema, db: Session = Depends(get_db)):
     return crud.create_extended_excursion(db, extended_excursion_create)
 
-@router.post("/delete", response_model=str)
-async def delete_extended_excursion(extended_excursion_delete: ExtendedExcursionSchema, db: Session = Depends(get_db)):
-    return crud.delete_extended_excursion(db, extended_excursion_delete)
+@router.get("/delete/{extended_excursion_id}", response_model=str)
+async def delete_extended_excursion(extended_excursion_id: int, db: Session = Depends(get_db)):
+    return crud.delete_extended_excursion(db, extended_excursion_id)
 
 @router.post("/update", response_model=str)
 async def update_extended_excursion(extended_excursion_update: ExtendedExcursionSchema, db: Session = Depends(get_db)):

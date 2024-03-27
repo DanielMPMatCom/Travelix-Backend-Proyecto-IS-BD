@@ -35,17 +35,17 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
 
     return "Success"
 
-def delete_package_reservation(db: Session, package_reservation_delete: PackageReservationSchema):
+def delete_package_reservation(db: Session, package_id: int, tourist_id: int, reservation_date: date):
 
-    package = get_package(db, package_reservation_delete.package_id)
+    package = get_package(db, package_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
-    tourist = get_tourist(db, package_reservation_delete.tourist_id)
+    tourist = get_tourist(db, tourist_id)
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
     
-    package_reservation = get_package_reservation(db, package_reservation_delete.package_id, package_reservation_delete.tourist_id, package_reservation_delete.reservation_date)
+    package_reservation = get_package_reservation(db, package_id, tourist_id, reservation_date)
     if package_reservation is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package Reservation not found")
 
