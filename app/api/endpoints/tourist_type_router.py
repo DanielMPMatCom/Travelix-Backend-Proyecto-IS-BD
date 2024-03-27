@@ -17,6 +17,6 @@ async def list_tourist_type(db:Session=Depends(get_db), skip:int=0, limit:int=10
 async def create_tourist_type(tourist_type_create: TouristTypeSchema, db: Session = Depends(get_db)):
     return crud.create_tourist_type(db, tourist_type_create)
 
-@router.post("/delete", response_model=str)
-async def delete_tourist_type(tourist_type_delete: TouristTypeSchema, db: Session = Depends(get_db)):
-    return crud.delete_tourist_type(db, tourist_type_delete)
+@router.get("/delete{tourist_type_id}", response_model=str)
+async def delete_tourist_type(tourist_type_id: int, db: Session = Depends(get_db)):
+    return crud.delete_tourist_type(db, tourist_type_id)

@@ -22,9 +22,9 @@ def create_hotel(db: Session, hotel_create: HotelSchema):
 
     return "Success"
 
-def delete_hotel(db: Session, hotel_delete: HotelSchema):
+def delete_hotel(db: Session, hotel_delete_id: int):
 
-    hotel = get_hotel(db, hotel_delete.id)
+    hotel = get_hotel(db, hotel_delete_id)
 
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")

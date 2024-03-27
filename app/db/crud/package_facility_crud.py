@@ -37,17 +37,17 @@ def create_package_facility(db: Session, package_facility_create: PackageFacilit
 
     return "Success"
 
-def delete_package_facility(db: Session, package_facility_delete: PackageFacilityAssociationSchema):
+def delete_package_facility(db: Session, package_id: int, facility_id: int):
 
-    package = get_package(db, package_facility_delete.package_id)
+    package = get_package(db, package_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
-    facility = get_facility(db, package_facility_delete.facility_id)
+    facility = get_facility(db, facility_id)
     if facility is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Facility not found")
     
-    package_facility = get_package_facility(db, package_facility_delete.package_id, package_facility_delete.facility_id)
+    package_facility = get_package_facility(db, package_id, facility_id)
     if package_facility is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package facility not found")
 

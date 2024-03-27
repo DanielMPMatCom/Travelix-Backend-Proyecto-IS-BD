@@ -32,18 +32,18 @@ def create_hotel_extended_excursion(db: Session, hotel_extended_excursion_create
 
     return "Success"
 
-def delete_hotel_extended_excursion(db: Session, hotel_extended_excursion_delete: HotelExtendedExcursionAssociationSchema):
+def delete_hotel_extended_excursion(db: Session, hotel_id: int, extended_excursion_id: int):
 
 
-    hotel = get_hotel(db, hotel_extended_excursion_delete.hotel_id)
+    hotel = get_hotel(db, hotel_id)
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel type not found")
     
-    extended_excursion = get_extended_excursion(db, hotel_extended_excursion_delete.extended_excursion_id)
+    extended_excursion = get_extended_excursion(db, extended_excursion_id)
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     
-    hotel_extended_excursion = get_hotel_extended_excursion(db, hotel_extended_excursion_delete.hotel_id, hotel_extended_excursion_delete.extended_excursion_id)
+    hotel_extended_excursion = get_hotel_extended_excursion(db, hotel_id, extended_excursion_id)
     if hotel_extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel extended excursion association not found")
 

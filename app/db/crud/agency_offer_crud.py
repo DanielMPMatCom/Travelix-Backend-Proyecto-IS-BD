@@ -32,18 +32,18 @@ def create_agency_offer(db: Session, agency_offer_create: AgencyOfferAssociation
 
     return "Success"
 
-def delete_agency_offer(db: Session, agency_offer_delete: AgencyOfferAssociationSchema):
+def delete_agency_offer(db: Session, agency_id: int, offer_id: int):
 
 
-    agency = get_agency(db, agency_offer_delete.agency_id)
+    agency = get_agency(db, agency_id)
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
-    offer = get_offer(db, agency_offer_delete.offer_id)
+    offer = get_offer(db, offer_id)
     if offer is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Offer not found")
     
-    agency_offer = get_agency_offer(db, agency_offer_delete.agency_id, agency_offer_delete.offer_id)
+    agency_offer = get_agency_offer(db, agency_id, offer_id)
     if agency_offer is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency Offer not found")
 
