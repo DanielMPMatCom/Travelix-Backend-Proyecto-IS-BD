@@ -56,12 +56,7 @@ def agencies_balance(db: Session, excel: str):
     return export_to_excel2(excel, agency_balance)
 
 
-# Obtener los nombres y la dirección electrónica de los turistas que han viajado más de una vez a Cuba de manera individual.
-def tourists_more_than_one_trip(db: Session, excel: str):
-    
-    # 
 
-    return export_to_excel(excel, tourists_more_than_one_trip)
 
 
 

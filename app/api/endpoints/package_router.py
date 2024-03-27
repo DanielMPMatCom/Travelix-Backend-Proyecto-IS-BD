@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Path, Depends
 from sqlalchemy.orm import Session
 
-from schemas import PackageSchema
+from schemas import PackageSchema, HotelSchema
 from db.config import get_db
 import db.crud.package_crud as crud
 
@@ -24,4 +24,12 @@ async def delete_package(package_id: int, db: Session = Depends(get_db)):
 @router.post("/update", response_model=str)
 async def update_package(package_update: PackageSchema, db: Session = Depends(get_db)):
     return crud.update_package(db, package_update)
+
+@router.get("/get/{package_id}", response_model=PackageSchema)
+async def get_package(package_id: int, db: Session = Depends(get_db)):
+    return crud.get_package(db, package_id)
+
+@router.get("/get_related_hotels/{package_id}")
+async def get_related_hotels(package_id: int, db: Session=Depends(get_db)):
+    return crud.get_package_hotels(db, package_id)
 
