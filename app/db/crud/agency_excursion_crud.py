@@ -58,6 +58,26 @@ def delete_agency_excursion(db: Session, agency_id: int, excursion_id: int):
 
     return "Success"
 
+from models import AgencyModel, ExcursionModel
+def get_weekend_excursions(db:Session, agency_id:int):
+    agency = get_agency(db, agency_id)
+    if agency is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
+    
+    related_excursions = db.query(
+        ExcursionModel
+        ).join(
+            AgencyExcursionAssociation
+        ).filter(
+            AgencyExcursionAssociation.agency_id == agency_id
+        ).filter(
+            ExcursionModel.departure_day.in_(["Friday", "Saturday", "Sunday", "Viernes", "Sábado", "Domingo"])
+        ).all()
+
+    
+    return related_excursions
+
+
 def toModel(schema:AgencyExcursionAssociationSchema) -> AgencyExcursionAssociation:
     return AgencyExcursionAssociation(agency_id=schema.agency_id,
                                       excursion_id=schema.excursion_id)

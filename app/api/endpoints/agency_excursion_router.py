@@ -20,3 +20,7 @@ async def create_agency_excursion(agency_excursion_create: AgencyExcursionAssoci
 @router.get("/delete/{agency_id}{excursion_id}", response_model=str)
 async def delete_agency_excursion(agency_id: int, excursion_id: int, db: Session = Depends(get_db)):
     return crud.delete_agency_excursion(db, agency_id, excursion_id)
+
+@router.get("/get_weekend_excursions/{agency_id}")
+async def get_weekend_excursions(agency_id:int, db:Session=Depends(get_db)):
+    return crud.get_weekend_excursions(db, agency_id)
