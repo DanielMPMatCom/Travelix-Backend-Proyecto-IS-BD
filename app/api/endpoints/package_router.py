@@ -17,9 +17,9 @@ async def list_package(db:Session=Depends(get_db), skip:int=0, limit:int=10):
 async def create_package(package_create: PackageSchema, db: Session = Depends(get_db)):
     return crud.create_package(db, package_create)
 
-@router.post("/delete", response_model=str)
-async def delete_package(package_delete: PackageSchema, db: Session = Depends(get_db)):
-    return crud.delete_package(db, package_delete)
+@router.get("/delete{package_id}", response_model=str)
+async def delete_package(package_id: int, db: Session = Depends(get_db)):
+    return crud.delete_package(db, package_id)
 
 @router.post("/update", response_model=str)
 async def update_package(package_update: PackageSchema, db: Session = Depends(get_db)):

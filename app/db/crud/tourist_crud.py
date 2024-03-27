@@ -33,19 +33,19 @@ def create_tourist(db: Session, tourist_create: TouristCreateSchema):
 
     return "Success"
 
-def delete_tourist(db: Session, tourist_delete: TouristCreateSchema):
+def delete_tourist(db: Session, tourist_delete_id: int):
 
-    tourist = get_tourist(db, tourist_delete.id)
+    tourist = get_tourist(db, tourist_delete_id)
 
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
     
-    # db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_id == tourist_delete.id))
-    # db.execute(delete(ExcursionReservation).where(ExcursionReservation.tourist_id == tourist_delete.id))
+    # db.execute(delete(TouristTypeTouristAssociation).where(TouristTypeTouristAssociation.tourist_id == tourist_delete_id))
+    # db.execute(delete(ExcursionReservation).where(ExcursionReservation.tourist_id == tourist_delete_id))
 
     db.delete(tourist)
     db.commit()
-    db.execute(delete(UserModel).where(UserModel.id == tourist_delete.id))
+    db.execute(delete(UserModel).where(UserModel.id == tourist_delete_id))
     db.commit()
 
     return "Success"

@@ -19,9 +19,9 @@ def create_facility(db: Session, facility_create: FacilitySchema):
 
     return "Success"
 
-def delete_facility(db: Session, facility_delete: FacilitySchema):
+def delete_facility(db: Session, facility_delete_id: int):
 
-    facility = get_facility(db, facility_delete.id)
+    facility = get_facility(db, facility_delete_id)
 
     if facility is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Facility not found")

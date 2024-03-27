@@ -25,4 +25,16 @@ def export_to_excel(excel_name: str, entities):
     )
 
     
+def export_to_excel2(excel_name: str, entities):
+    # Crear un DataFrame a partir de la lista de diccionarios
+    df = DataFrame(entities)
     
+    # Escribir el DataFrame en un archivo Excel
+    df.to_excel(excel_name, index=False)
+
+    # Retornar el archivo Excel como una respuesta HTTP
+    return FileResponse(
+        excel_name,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        filename=excel_name,
+    )

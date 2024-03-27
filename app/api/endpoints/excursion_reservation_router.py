@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Path, Depends
 from sqlalchemy.orm import Session
+from datetime import date
 
 from schemas import ExcursionReservationSchema
 from db.config import get_db
@@ -17,6 +18,6 @@ async def list_excursion_reservation(db:Session=Depends(get_db), skip:int=0, lim
 async def create_excursion_reservation(excursion_reservation_create: ExcursionReservationSchema, db: Session = Depends(get_db)):
     return crud.create_excursion_reservation(db, excursion_reservation_create)
 
-@router.post("/delete", response_model=str)
-async def delete_excursion_reservation(excursion_reservation_delete: ExcursionReservationSchema, db: Session = Depends(get_db)):
-    return crud.delete_excursion_reservation(db, excursion_reservation_delete)
+@router.get("/delete{excursion_id}{tourist_id}{reservation_date}", response_model=str)
+async def delete_excursion_reservation(excursion_id: int, tourist_id: int, reservation_date: date, db: Session = Depends(get_db)):
+    return crud.delete_excursion_reservation(db, excursion_id, tourist_id, reservation_date)

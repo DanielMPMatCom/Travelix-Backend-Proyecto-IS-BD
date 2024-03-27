@@ -4,6 +4,7 @@ from models import ExcursionReservation
 from schemas import ExcursionReservationSchema
 from db.crud.excursion_crud import get_excursion
 from db.crud.tourist_crud import get_tourist
+from db.crud.agency_excursion_crud import get_agency_excursion_by_excursion
 from datetime import date
 
 
@@ -27,6 +28,10 @@ def create_excursion_reservation(db: Session, excursion_reservation_create: Excu
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
     
+    excursion_associated_with_agency = get_agency_excursion_by_excursion(db, excursion_reservation_create.excursion_id)
+    if excursion_associated_with_agency is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't reserve an excursion not associated with an agency")
+    
     excursion_reservation = get_excursion_reservation(db, excursion_reservation_create.excursion_id, excursion_reservation_create.tourist_id, excursion_reservation_create.reservation_date)
     if excursion_reservation is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Excursion Reservation already exists")
@@ -38,18 +43,17 @@ def create_excursion_reservation(db: Session, excursion_reservation_create: Excu
 
     return "Success"
 
-def delete_excursion_reservation(db: Session, excursion_reservation_delete: ExcursionReservationSchema):
+def delete_excursion_reservation(db: Session, excursion_id: int, tourist_id: int, reservation_date: date):
 
-    excursion = get_excursion(db, excursion_reservation_delete.excursion_id)
+    excursion = get_excursion(db, excursion_id)
     if excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion not found")
 
-    tourist = get_tourist(db, excursion_reservation_delete.tourist_id)
+    tourist = get_tourist(db, tourist_id)
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
     
-    
-    excursion_reservation = get_excursion_reservation(db, excursion_reservation_delete.excursion_id, excursion_reservation_delete.tourist_id, excursion_reservation_delete.reservation_date)
+    excursion_reservation = get_excursion_reservation(db, excursion_id, tourist_id, reservation_date)
     if excursion_reservation is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion Reservation not found")
 

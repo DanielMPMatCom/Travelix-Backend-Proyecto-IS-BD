@@ -34,18 +34,18 @@ def create_tourist_type_tourist(db: Session, tourist_type_tourist_create: Touris
 
     return "Success"
 
-def delete_tourist_type_tourist(db: Session, tourist_type_tourist_delete: TouristTypeTouristAssociationSchema):
+def delete_tourist_type_tourist(db: Session, tourist_id: int, tourist_type_id: int):
 
 
-    tourist_type = get_tourist_type(db, tourist_type_tourist_delete.tourist_type_id)
+    tourist_type = get_tourist_type(db, tourist_type_id)
     if tourist_type is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist type not found")
     
-    tourist = get_tourist(db, tourist_type_tourist_delete.tourist_id)
+    tourist = get_tourist(db, tourist_id)
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
     
-    tourist_type_tourist = get_tourist_type_tourist(db, tourist_type_tourist_delete.tourist_type_id, tourist_type_tourist_delete.tourist_id)
+    tourist_type_tourist = get_tourist_type_tourist(db, tourist_type_id, tourist_id)
     if tourist_type_tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist_type tourist association not found")
 
