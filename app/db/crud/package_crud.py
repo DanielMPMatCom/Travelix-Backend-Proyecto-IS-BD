@@ -12,6 +12,9 @@ def list_package(db: Session, skip: int, limit: int):
 def get_package(db: Session, package_id: int):
     return db.query(PackageModel).filter(PackageModel.id == package_id).first()
 
+def get_package_by_agency_and_extended_excursion(db: Session, agency_id: int, extended_excursion_id: int):
+    return db.query(PackageModel).filter(PackageModel.agency_id == agency_id, PackageModel.extended_excursion_id == extended_excursion_id).first()
+
 def create_package(db: Session, package_create: PackageSchema):
 
     agency = get_agency(db, package_create.agency_id)
@@ -22,7 +25,11 @@ def create_package(db: Session, package_create: PackageSchema):
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     
-    package = get_package(db, package_create.id)
+    extended_excursion_with_hotels = db.query(HotelExtendedExcursionAssociation).filter(HotelExtendedExcursionAssociation.extended_excursion_id == package_create.extended_excursion_id).first()
+    if extended_excursion_with_hotels is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't create a package for this extended excursion because it doesn't have any hotels associated with it")
+    
+    package = get_package_by_agency_and_extended_excursion(db, package_create.agency_id, package_create.extended_excursion_id)
     if package is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Package already exists")
 
@@ -57,6 +64,10 @@ def update_package(db: Session, package_update: PackageSchema):
     extended_excursion = get_extended_excursion(db, package_update.extended_excursion_id)
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
+    
+    extended_excursion_with_hotels = db.query(HotelExtendedExcursionAssociation).filter(HotelExtendedExcursionAssociation.extended_excursion_id == package_update.extended_excursion_id).first()
+    if extended_excursion_with_hotels is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update a package with this extended excursion because it doesn't have any hotels associated with it")
     
     package = get_package(db, package_update.id)
     if package is None:
