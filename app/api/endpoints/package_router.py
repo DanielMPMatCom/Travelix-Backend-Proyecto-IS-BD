@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path, Depends
+from fastapi import APIRouter, HTTPException, Path, Depends, status
 from sqlalchemy.orm import Session
 
 from schemas import PackageSchema, HotelSchema
@@ -27,7 +27,8 @@ async def update_package(package_update: PackageSchema, db: Session = Depends(ge
 
 @router.get("/get/{package_id}", response_model=PackageSchema)
 async def get_package(package_id: int, db: Session = Depends(get_db)):
-    return crud.get_package(db, package_id)
+    package = crud.get_package(db, package_id)
+    return package if package is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Package not found")
 
 @router.get("/get_related_hotels/{package_id}")
 async def get_related_hotels(package_id: int, db: Session=Depends(get_db)):
