@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path, Depends
+from fastapi import APIRouter, HTTPException, Path, Depends, status
 from sqlalchemy.orm import Session
 
 from schemas import AgencySchema
@@ -28,9 +28,6 @@ async def update_agency(agency_update: AgencySchema, db: Session = Depends(get_d
 
 @router.get("/get/{agency_id}", response_model=AgencySchema)
 async def get_agency(agency_id: int, db: Session = Depends(get_db)):
-    agency_model = crud.get_agency(db, agency_id)
-    
-    if agency_model is None:
-        return ""
+    agency = crud.get_agency(db, agency_id)
+    return agency if agency is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Hotel not found")
 
-    return crud.toShema(agency_model)
