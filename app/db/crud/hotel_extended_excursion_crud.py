@@ -1,9 +1,9 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import HotelExtendedExcursionAssociation
+from models import HotelExtendedExcursionAssociation, ExtendedExcursionModel
 from schemas import HotelExtendedExcursionAssociationSchema
 from db.crud.hotel_crud import get_hotel
-from db.crud.extended_excursion_crud import get_extended_excursion
+# from db.crud.extended_excursion_crud import get_extended_excursion
 
 def list_hotel_extended_excursion(db: Session, skip: int, limit: int):
     return db.query(HotelExtendedExcursionAssociation).offset(skip).limit(limit).all()
@@ -17,7 +17,8 @@ def create_hotel_extended_excursion(db: Session, hotel_extended_excursion_create
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
     
-    extended_excursion = get_extended_excursion(db, hotel_extended_excursion_create.extended_excursion_id)
+    # extended_excursion = get_extended_excursion(db, hotel_extended_excursion_create.extended_excursion_id)
+    extended_excursion = db.query(ExtendedExcursionModel).filter(ExtendedExcursionModel.id == hotel_extended_excursion_create.extended_excursion_id).first()
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     
@@ -39,7 +40,8 @@ def delete_hotel_extended_excursion(db: Session, hotel_id: int, extended_excursi
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel type not found")
     
-    extended_excursion = get_extended_excursion(db, extended_excursion_id)
+    # extended_excursion = get_extended_excursion(db, extended_excursion_id)
+    extended_excursion = db.query(ExtendedExcursionModel).filter(ExtendedExcursionModel.id == extended_excursion_id).first()
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended excursion not found")
     

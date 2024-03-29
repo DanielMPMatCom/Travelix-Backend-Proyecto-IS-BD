@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Path, Depends
 from sqlalchemy.orm import Session
+from typing import List
 
-from schemas import ExtendedExcursionSchema
+from schemas import ExtendedExcursionSchema, HotelExtendedExcursionAssociationSchema, TimeInHotel
 from db.config import get_db
 import db.crud.extended_excursion_crud as crud
 
@@ -14,8 +15,8 @@ async def list_extended_excursion(db:Session=Depends(get_db), skip:int=0, limit:
     return crud.list_extended_excursion(db, skip, limit)
 
 @router.post("/create", response_model=str)
-async def create_extended_excursion(extended_excursion_create: ExtendedExcursionSchema, db: Session = Depends(get_db)):
-    return crud.create_extended_excursion(db, extended_excursion_create)
+async def create_extended_excursion(extended_excursion_create: ExtendedExcursionSchema, associated_hotels: List[TimeInHotel], db: Session = Depends(get_db)):
+    return crud.create_extended_excursion(db, extended_excursion_create, associated_hotels)
 
 @router.get("/delete/{extended_excursion_id}", response_model=str)
 async def delete_extended_excursion(extended_excursion_id: int, db: Session = Depends(get_db)):

@@ -1,9 +1,10 @@
 from fastapi import HTTPException, status
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import ExtendedExcursionModel, PackageReservation, ExcursionModel, ExcursionReservation, AgencyExcursionAssociation, HotelExtendedExcursionAssociation, PackageModel
-from schemas import ExtendedExcursionSchema
-from db.crud.excursion_crud import get_excursion, delete_excursion
+from models import ExtendedExcursionModel, HotelModel, PackageReservation, ExcursionModel, ExcursionReservation, AgencyExcursionAssociation, HotelExtendedExcursionAssociation, PackageModel
+from schemas import ExtendedExcursionSchema, HotelSchema, TimeInHotel
+from db.crud.hotel_extended_excursion_crud import create_hotel_extended_excursion
+from typing import List
 
 
 def list_extended_excursion(db: Session, skip: int, limit: int):
@@ -12,12 +13,34 @@ def list_extended_excursion(db: Session, skip: int, limit: int):
 def get_extended_excursion(db: Session, id: int):
     return db.query(ExtendedExcursionModel).filter(ExtendedExcursionModel.id == id).first()
 
-def create_extended_excursion(db: Session, extended_excursion_create: ExtendedExcursionSchema):
+def create_extended_excursion(db: Session, extended_excursion_create: ExtendedExcursionSchema, associated_hotels: List[TimeInHotel]):
+
+    for hotel_excursion_association in associated_hotels:
+        hotel = db.query(HotelModel).filter(HotelModel.id == hotel_excursion_association.hotel_id).first()
+        if hotel is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
+    
+    if date_crash(associated_hotels):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Arrival Date must be before Departure Date")
+
+    if date_overlap(associated_hotels):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Date Overlap")
 
     extended_excursion = toModel(extended_excursion_create)
     db.add(extended_excursion)
     db.commit()
     db.refresh(extended_excursion)
+
+    for hotel_excursion_association in associated_hotels:
+        hotel_extended_excursion = HotelExtendedExcursionAssociation(
+                                        extended_excursion_id=extended_excursion.id,
+                                        hotel_id=hotel_excursion_association.hotel_id,
+                                        departure_date = hotel_excursion_association.departure_date,
+                                        arrival_date=hotel_excursion_association.arrival_date)
+        db.add(hotel_extended_excursion)
+        db.commit()
+        db.refresh(hotel_extended_excursion)
+
 
     return "Success"
 
@@ -96,3 +119,20 @@ def toShema(model:ExtendedExcursionModel) -> ExtendedExcursionSchema:
                                     arrival_hour=model.arrival_hour,
                                     arrival_place=model.arrival_place,
                                     price=model.price)
+
+
+def date_overlap(dates: List[TimeInHotel]):
+    dates.sort(key=lambda x: x.arrival_date)
+
+    for i in range(1, len(dates)):
+        if dates[i].arrival_date < dates[i-1].departure_date or dates[i].arrival_date == dates[i-1].arrival_date:
+            return True
+
+    return False
+
+def date_crash(dates: List[TimeInHotel]):
+
+    for i in range(len(dates)):
+        if dates[i].arrival_date >= dates[i].departure_date:
+            return True
+    return False

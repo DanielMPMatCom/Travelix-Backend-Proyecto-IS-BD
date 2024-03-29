@@ -108,3 +108,8 @@ class PackageReservationSchema(BaseModel):
     tourist_id: Optional[int]
     package_id: Optional[int]
     reservation_date: Optional[date] = None
+
+class TimeInHotel(BaseModel):
+    hotel_id: int
+    arrival_date: date
+    departure_date: date
