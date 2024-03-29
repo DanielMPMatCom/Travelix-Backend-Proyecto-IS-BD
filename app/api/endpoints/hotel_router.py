@@ -25,7 +25,7 @@ async def delete_hotel(hotel_id: int, db: Session = Depends(get_db)):
 async def update_hotel(hotel_update: HotelSchema, db: Session = Depends(get_db)):
     return crud.update_hotel(db, hotel_update)
 
-@router.get("/get/{hotel_id}", response_model=HotelSchema)
+@router.get("/get/{hotel_id}")
 async def get_hotel(hotel_id: int, db: Session = Depends(get_db)):
     hotel = crud.get_hotel(db, hotel_id)
     return hotel if hotel is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Hotel not found")

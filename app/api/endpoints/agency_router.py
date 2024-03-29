@@ -26,8 +26,8 @@ async def update_agency(agency_update: AgencySchema, db: Session = Depends(get_d
     return crud.update_agency(db, agency_update)
 
 
-@router.get("/get/{agency_id}", response_model=AgencySchema)
+@router.get("/get/{agency_id}")
 async def get_agency(agency_id: int, db: Session = Depends(get_db)):
     agency = crud.get_agency(db, agency_id)
-    return agency if agency is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Hotel not found")
+    return agency if agency is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Agency not found")
 

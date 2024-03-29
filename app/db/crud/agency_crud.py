@@ -49,9 +49,8 @@ def delete_agency(db: Session, agency_delete_id: int):
     return "Success"
 
 def update_agency(db: Session, agency_update: AgencySchema):
-    print(agency_update.id)
-    agency = get_agency(db, agency_update.id)
 
+    agency = get_agency(db, agency_update.id)
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")
     
