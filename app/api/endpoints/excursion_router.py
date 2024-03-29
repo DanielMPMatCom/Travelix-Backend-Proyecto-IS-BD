@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path, Depends
+from fastapi import APIRouter, HTTPException, Path, Depends, status
 from sqlalchemy.orm import Session
 
 from schemas import ExcursionSchema
@@ -24,3 +24,9 @@ async def delete_excursion(excursion_id: int, db: Session = Depends(get_db)):
 @router.post("/update", response_model=str)
 async def update_excursion(excursion_update: ExcursionSchema, db: Session = Depends(get_db)):
     return crud.update_excursion(db, excursion_update)
+
+@router.get("/get/{excursion_id}", response_model=ExcursionSchema)
+async def get_excursion(excursion_id: int, db: Session = Depends(get_db)):
+    excursion = crud.get_excursion(db, excursion_id)
+    return excursion if excursion is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Excursion not found")
+
