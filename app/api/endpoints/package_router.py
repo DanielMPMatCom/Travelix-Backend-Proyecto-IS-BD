@@ -25,7 +25,7 @@ async def delete_package(package_id: int, db: Session = Depends(get_db)):
 async def update_package(package_update: PackageSchema, db: Session = Depends(get_db)):
     return crud.update_package(db, package_update)
 
-@router.get("/get/{package_id}", response_model=PackageSchema)
+@router.get("/get/{package_id}")
 async def get_package(package_id: int, db: Session = Depends(get_db)):
     package = crud.get_package(db, package_id)
     return package if package is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Package not found")
