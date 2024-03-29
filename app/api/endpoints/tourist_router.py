@@ -9,6 +9,9 @@ import db.crud.tourist_crud as crud
 
 router = APIRouter(prefix="/tourist", tags=["tourist"])
 
+@router.get("/list")
+async def list_tourist(db:Session=Depends(get_db), skip:int=0, limit:int=10):
+    return crud.list_tourist(db, skip, limit)
 
 @router.post("/token", response_model=Token)
 async def login(token = Depends(login_for_access_token)):
