@@ -21,6 +21,10 @@ async def create_hotel(hotel_create: HotelSchema, db: Session = Depends(get_db))
 async def delete_hotel(hotel_id: int, db: Session = Depends(get_db)):
     return crud.delete_hotel(db, hotel_id)
 
+@router.post("/update", response_model=str)
+async def update_hotel(hotel_update: HotelSchema, db: Session = Depends(get_db)):
+    return crud.update_hotel(db, hotel_update)
+
 @router.get("/get/{hotel_id}", response_model=HotelSchema)
 async def get_hotel(hotel_id: int, db: Session = Depends(get_db)):
     hotel = crud.get_hotel(db, hotel_id)
