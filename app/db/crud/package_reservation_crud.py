@@ -10,7 +10,6 @@ from datetime import date
 def list_package_reservation(db: Session, skip: int, limit: int):
     return db.query(PackageReservation).offset(skip).limit(limit).all()
 
-
 def get_package_reservation(db: Session, package_id: int, tourist_id: int, reservation_date: date):
     return db.query(PackageReservation).filter(PackageReservation.package_id == package_id, PackageReservation.tourist_id == tourist_id, PackageReservation.reservation_date == reservation_date).first()
 
@@ -27,6 +26,9 @@ def create_package_reservation(db: Session, package_reservation_create: PackageR
     package_reservation = get_package_reservation(db, package_reservation_create.package_id, package_reservation_create.tourist_id, package_reservation_create.reservation_date)
     if package_reservation is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Package Reservation already exists")
+    
+    if package_reservation_create.amount_of_people < 1:
+        package_reservation_create.amount_of_people = 1
 
     package_reservation = toModel(package_reservation_create)
     db.add(package_reservation)
@@ -49,7 +51,6 @@ def delete_package_reservation(db: Session, package_id: int, tourist_id: int, re
     if package_reservation is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package Reservation not found")
 
-
     db.delete(package_reservation)
     db.commit()
 
@@ -58,9 +59,13 @@ def delete_package_reservation(db: Session, package_id: int, tourist_id: int, re
 def toModel(schema:PackageReservationSchema) -> PackageReservation:
     return PackageReservation(package_id=schema.package_id,
                                 tourist_id=schema.tourist_id,
-                                reservation_date=schema.reservation_date)
+                                reservation_date=schema.reservation_date,
+                                amount_of_people=schema.amount_of_people,
+                                air_line=schema.air_line)
 
 def toShema(model:PackageReservation) -> PackageReservationSchema:
     return PackageReservationSchema(package_id=model.package_id,
                                       tourist_id=model.tourist_id,
-                                      reservation_date=model.reservation_date)
+                                      reservation_date=model.reservation_date,
+                                      amount_of_people=model.amount_of_people,
+                                      air_line=model.air_line)

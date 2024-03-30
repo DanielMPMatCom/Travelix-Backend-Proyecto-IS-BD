@@ -1,9 +1,7 @@
 from fastapi import HTTPException, status
-from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import ExtendedExcursionModel, HotelModel, PackageReservation, ExcursionModel, ExcursionReservation, AgencyExcursionAssociation, HotelExtendedExcursionAssociation, PackageModel
-from schemas import ExtendedExcursionSchema, HotelSchema, TimeInHotel
-from db.crud.hotel_extended_excursion_crud import create_hotel_extended_excursion
+from models import ExtendedExcursionModel, HotelModel, PackageReservation, HotelExtendedExcursionAssociation, PackageModel
+from schemas import ExtendedExcursionSchema, TimeInHotel
 from typing import List
 
 
@@ -52,12 +50,12 @@ def delete_extended_excursion(db: Session, extended_excursion_delete_id: int):
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended Excursion not found")
     
-    packages_with_excursion = db.query(PackageModel).filter(PackageModel.extended_excursion_id == extended_excursion_delete_id).all()
-    if packages_with_excursion is not None:
-        for package in packages_with_excursion:
-            reserved_package = db.query(PackageReservation).filter(PackageReservation.package_id == package.id).first()
-            if reserved_package is not None:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Extended Excursion because is is ivolved in a Package Reservation")
+    reserved_package_with_excursion = db.query(PackageModel).\
+        join(PackageReservation, PackageModel.id == PackageReservation.package_id).\
+        filter(PackageModel.extended_excursion_id == extended_excursion_delete_id).first()
+    
+    if reserved_package_with_excursion is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Extended Excursion because is is ivolved in a Package Reservation")
     
     db.delete(extended_excursion)
     db.commit()
@@ -70,12 +68,12 @@ def update_extended_excursion(db: Session, extended_excursion_update: ExtendedEx
     if extended_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Extended Excursion not found")
     
-    packages_with_excursion = db.query(PackageModel).filter(PackageModel.extended_excursion_id == extended_excursion_update.id).all()
-    if packages_with_excursion is not None:
-        for package in packages_with_excursion:
-            reserved_package = db.query(PackageReservation).filter(PackageReservation.package_id == package.id).first()
-            if reserved_package is not None:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Extended Excursion because is is ivolved in a Package Reservation")
+    reserved_package_with_excursion = db.query(PackageModel).\
+        join(PackageReservation, PackageModel.id == PackageReservation.package_id).\
+        filter(PackageModel.extended_excursion_id == extended_excursion_update.id).first()
+    
+    if reserved_package_with_excursion is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Extended Excursion because is is ivolved in a Package Reservation")
     
     if extended_excursion_update.departure_day is not None:
         extended_excursion.departure_day = extended_excursion_update.departure_day
@@ -100,7 +98,6 @@ def update_extended_excursion(db: Session, extended_excursion_update: ExtendedEx
 
 def toModel(schema:ExtendedExcursionSchema) -> ExtendedExcursionModel:
     return ExtendedExcursionModel(
-        # excursion_id=schema.excursion_id, 
                             departure_day=schema.departure_day, 
                           departure_hour=schema.departure_hour, 
                           departure_place=schema.departure_place, 

@@ -34,7 +34,6 @@ def create_agency_offer(db: Session, agency_offer_create: AgencyOfferAssociation
 
 def delete_agency_offer(db: Session, agency_id: int, offer_id: int):
 
-
     agency = get_agency(db, agency_id)
     if agency is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found")

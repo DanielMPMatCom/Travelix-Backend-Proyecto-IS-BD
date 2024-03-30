@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import PackageModel, PackageReservation
+from models import PackageModel, PackageReservation, HotelModel, HotelExtendedExcursionAssociation
 from schemas import PackageSchema
 from db.crud.agency_crud import get_agency
 from db.crud.extended_excursion_crud import get_extended_excursion
@@ -86,34 +86,25 @@ def update_package(db: Session, package_update: PackageSchema):
     if package_update.photo_url is not None:
         package.photo_url = package_update.photo_url
     
-
-
     db.commit()
 
     return "Success"
 
-from models import HotelModel, HotelExtendedExcursionAssociation
 
 def get_package_hotels(db:Session, package_id:int):
     package = get_package(db, package_id)
     if package is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
-    hotels = db.query(
-        HotelModel
-    ).join(
-        HotelExtendedExcursionAssociation,
-        HotelModel.id == HotelExtendedExcursionAssociation.hotel_id
-    ).filter(
-        HotelExtendedExcursionAssociation.extended_excursion_id == package.extended_excursion_id
-    ).all()
+    hotels = db.query(HotelModel).\
+        join(HotelExtendedExcursionAssociation, HotelModel.id == HotelExtendedExcursionAssociation.hotel_id).\
+        filter(HotelExtendedExcursionAssociation.extended_excursion_id == package.extended_excursion_id).all()
 
     return hotels
 
 
 def toModel(schema:PackageSchema) -> PackageModel:
     return PackageModel(
-        # id=schema.id,
                         agency_id=schema.agency_id,
                         extended_excursion_id=schema.extended_excursion_id,
                         duration=schema.duration,

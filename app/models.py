@@ -158,6 +158,8 @@ class ExcursionReservation(Base):
     tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
     excursion_id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
     reservation_date = Column(Date, primary_key=True, nullable=False)
+    amount_of_people = Column(Integer, nullable=False)
+    air_line = Column(String(50), nullable=False)
 
     excursions = relationship("ExcursionModel", back_populates='tourists')
     tourists = relationship("TouristModel", back_populates='excursions')
@@ -212,6 +214,8 @@ class PackageReservation(Base):
     tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
     package_id = Column(Integer, ForeignKey('package.id'), primary_key=True, nullable=False)
     reservation_date = Column(Date, primary_key=True, nullable=False)
+    amount_of_people = Column(Integer, nullable=False)
+    air_line = Column(String(50), nullable=False)
 
     packages = relationship("PackageModel", back_populates='tourists')
     tourists = relationship("TouristModel", back_populates='packages')

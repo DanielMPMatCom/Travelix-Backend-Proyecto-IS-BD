@@ -11,7 +11,7 @@ def list_hotel_extended_excursion(db: Session, skip: int, limit: int):
 def get_hotel_extended_excursion(db: Session, hotel_id: int, extended_excursion_id: int):
     return db.query(HotelExtendedExcursionAssociation).filter(HotelExtendedExcursionAssociation.hotel_id == hotel_id, HotelExtendedExcursionAssociation.extended_excursion_id == extended_excursion_id).first()
 
-def create_hotel_extended_excursion(db: Session, hotel_extended_excursion_create: HotelExtendedExcursionAssociation):
+def create_hotel_extended_excursion(db: Session, hotel_extended_excursion_create: HotelExtendedExcursionAssociationSchema):
 
     hotel = get_hotel(db, hotel_extended_excursion_create.hotel_id)
     if hotel is None:

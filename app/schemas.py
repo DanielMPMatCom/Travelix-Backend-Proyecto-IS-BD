@@ -84,6 +84,8 @@ class ExcursionReservationSchema(BaseModel):
     tourist_id: Optional[int]
     excursion_id: Optional[int]
     reservation_date: Optional[date] = None
+    amount_of_people: Optional[int] = None
+    air_line: Optional[str] = None
     
 class TouristTypeTouristAssociationSchema(BaseModel):
     tourist_id: Optional[int]
@@ -111,6 +113,8 @@ class PackageReservationSchema(BaseModel):
     tourist_id: Optional[int]
     package_id: Optional[int]
     reservation_date: Optional[date] = None
+    amount_of_people: Optional[int] = None
+    air_line: Optional[str] = None
 
 class TimeInHotel(BaseModel):
     hotel_id: int
