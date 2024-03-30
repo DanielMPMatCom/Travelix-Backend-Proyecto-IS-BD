@@ -17,6 +17,8 @@ from api.endpoints.package_facility_router import router as package_facility_rou
 from api.endpoints.package_reservation_router import router as package_reservation_router
 from api.endpoints.statistics_router import router as statistics_router
 from api.endpoints.root_router import router as root_router
+from api.endpoints.user_router import router as user_router
+
 
 router = APIRouter()
 router.include_router(agency_router)
@@ -37,3 +39,4 @@ router.include_router(excursion_reservation_router)
 router.include_router(package_reservation_router)
 router.include_router(statistics_router)
 router.include_router(root_router)
+router.include_router(user_router)

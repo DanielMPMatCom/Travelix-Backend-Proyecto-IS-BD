@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Time, ForeignKey, Date, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, Time, ForeignKey, Date, UniqueConstraint, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -17,6 +17,7 @@ class UserModel(Base):
     email = Column(String(100), nullable=False)
     role = Column(String(20), nullable=False)
     password = Column(String(100), nullable=False)
+    disabled = Column(Boolean, nullable=False, default=False)
 
 class TouristModel(UserModel):
 
