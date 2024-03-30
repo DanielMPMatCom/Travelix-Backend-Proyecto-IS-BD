@@ -21,6 +21,12 @@ class UserSchema(BaseModel):
 class UserCreateSchema(UserSchema):
     password: str
 
+class AgentSchema(UserSchema):
+    agency_id: Optional[int] = None
+
+class AgentCreateSchema(AgentSchema):
+    password: str
+
 class TouristSchema(UserSchema):
     nationality: Optional[str] = None
 
