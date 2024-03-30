@@ -19,6 +19,13 @@ class UserModel(Base):
     password = Column(String(100), nullable=False)
     disabled = Column(Boolean, nullable=False, default=False)
 
+class AgentModel(UserModel):
+
+    __tablename__ = "agent"
+
+    id = Column(Integer, ForeignKey('user.id'), primary_key=True, nullable=False)
+    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
+
 class TouristModel(UserModel):
 
     __tablename__ = "tourist"
@@ -52,6 +59,7 @@ class AgencyModel(Base):
     excursions = relationship("AgencyExcursionAssociation", back_populates="agencies", cascade="all, delete-orphan")
     offers = relationship("AgencyOfferAssociation", back_populates="agencies", cascade='all, delete-orphan')
     extended_excursions = relationship("PackageModel", back_populates="agency", cascade='all, delete-orphan')
+    agents = relationship("AgentModel", cascade='all, delete-orphan')
     
 class ExcursionModel(Base):
 
