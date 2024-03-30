@@ -29,7 +29,14 @@ def delete_hotel(db: Session, hotel_delete_id: int):
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
     
+    reserved_package_with_hotel = db.query(HotelExtendedExcursionAssociation).\
+        join(PackageModel, PackageModel.extended_excursion_id == HotelExtendedExcursionAssociation.extended_excursion_id).\
+        join(PackageReservation, PackageModel.id == PackageReservation.package_id).\
+        filter(HotelExtendedExcursionAssociation.hotel_id == hotel_delete_id).first()
     
+    if reserved_package_with_hotel is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Hotel because it is involved in a Package Reservation")
+        
     db.delete(hotel)
     db.commit()
 
@@ -41,16 +48,14 @@ def update_hotel(db: Session, hotel_update: HotelSchema):
     if hotel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Hotel not found")
 
-    extended_excursion_with_hotel = db.query(HotelExtendedExcursionAssociation).filter(HotelExtendedExcursionAssociation.hotel_id == hotel_update.id).all()
-    if extended_excursion_with_hotel is not None:
-        for excursion in extended_excursion_with_hotel:
-            packages_with_extended_excursion = db.query(PackageModel).filter(PackageModel.extended_excursion_id == excursion.extended_excursion_id).all()
-            if packages_with_extended_excursion is not None:
-                for package in packages_with_extended_excursion:
-                    package_reservation = db.query(PackageReservation).filter(PackageReservation.package_id == package.id).first()
-                    if package_reservation is not None:
-                        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Can't update this Hotel because it is involved in a Package Reservation") 
-
+    reserved_package_with_hotel = db.query(HotelExtendedExcursionAssociation).\
+        join(PackageModel, PackageModel.extended_excursion_id == HotelExtendedExcursionAssociation.extended_excursion_id).\
+        join(PackageReservation, PackageModel.id == PackageReservation.package_id).\
+        filter(HotelExtendedExcursionAssociation.hotel_id == hotel_update.id).first()
+    
+    if reserved_package_with_hotel is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't update this Hotel because it is involved in a Package Reservation")
+     
     if hotel_update.name is not None:
         hotel.name = hotel_update.name
     if hotel_update.address is not None:
@@ -67,7 +72,6 @@ def update_hotel(db: Session, hotel_update: HotelSchema):
 
 def toModel(schema:HotelSchema) -> HotelModel:
     return HotelModel(
-        # id=schema.id,
                       name=schema.name,
                       address=schema.address,
                       category=schema.category,

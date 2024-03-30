@@ -11,9 +11,9 @@ def list_package_facility(db: Session, skip: int, limit: int):
 
 
 def get_package_facility(db: Session, package_id: int, facility_id: int):
-    return db.query(PackageFacilityAssociation).filter(
-        PackageFacilityAssociation.package_id == package_id,
-        PackageFacilityAssociation.facility_id == facility_id).first()
+    return db.query(PackageFacilityAssociation).\
+        filter(PackageFacilityAssociation.package_id == package_id, 
+               PackageFacilityAssociation.facility_id == facility_id).first()
 
 def create_package_facility(db: Session, package_facility_create: PackageFacilityAssociationSchema):
 

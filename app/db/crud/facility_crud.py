@@ -1,5 +1,4 @@
 from fastapi import HTTPException, status
-from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from models import FacilityModel
 from schemas import FacilitySchema
@@ -48,7 +47,6 @@ def update_facility(db: Session, facility_update: FacilitySchema):
 
 def toModel(schema:FacilitySchema) -> FacilityModel:
     return FacilityModel(
-        # id=schema.id,
                           description=schema.description)
 
 def toShema(model:FacilityModel) -> FacilitySchema:
