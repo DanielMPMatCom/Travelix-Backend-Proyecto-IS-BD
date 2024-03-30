@@ -25,4 +25,6 @@ async def delete_tourist(tourist_id: int, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=TouristSchema)
 async def get_tourist_me(db: Session = Depends(get_db), current_user: UserSchema = Depends(auth.get_current_active_user)):
+    if current_user.role != "tourist":
+        raise HTTPException(status_code=400, detail="User is not a tourist")
     return current_user
