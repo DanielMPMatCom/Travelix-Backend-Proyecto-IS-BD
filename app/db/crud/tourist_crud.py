@@ -76,7 +76,7 @@ def TouristToModel(schema: TouristCreateSchema) -> TouristModel:
         name=schema.name,
         phone=schema.phone,
         email=schema.email,
-        role=schema.role,
+        role="tourist",
         password=auth.get_password_hash(schema.password),
         nationality=schema.nationality,
         )
@@ -88,6 +88,6 @@ def ModelToSchema(user:UserModel, tourist:TouristModel) -> TouristSchema:
         name=user.name,
         phone=user.phone,
         email=user.email,
-        role=user.role,
+        role="tourist",
         nationality=tourist.nationality
     )
