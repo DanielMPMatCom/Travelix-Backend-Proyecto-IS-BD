@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
-from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from models import OfferModel, AgencyOfferAssociation
+from models import OfferModel
 from schemas import OfferSchema
 import db.crud.hotel_crud as hotel
 
@@ -62,7 +61,6 @@ def update_offer(db: Session, offer_update: OfferSchema):
  
 def toModel(schema:OfferSchema) -> OfferModel:
     return OfferModel(
-        # id=schema.id,
                           price=schema.price,
                           description=schema.description,
                           hotel_id=schema.hotel_id)

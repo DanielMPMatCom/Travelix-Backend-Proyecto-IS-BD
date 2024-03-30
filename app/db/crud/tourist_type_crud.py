@@ -1,5 +1,4 @@
 from fastapi import HTTPException, status
-from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from models import TouristTypeModel, TouristTypeTouristAssociation
 from schemas import TouristTypeSchema
@@ -33,7 +32,6 @@ def delete_tourist_type(db: Session, tourist_type_delete_id: int):
 
 def toModel(schema:TouristTypeSchema) -> TouristTypeModel:
     return TouristTypeModel(
-        # id=schema.id,
                           name=schema.name)
 
 def toShema(model:TouristTypeModel) -> TouristTypeSchema:

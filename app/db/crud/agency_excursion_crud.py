@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import AgencyExcursionAssociation
+from models import AgencyExcursionAssociation, ExcursionModel
 from schemas import AgencyExcursionAssociationSchema
 from db.crud.agency_crud import get_agency
 from db.crud.excursion_crud import get_excursion
@@ -52,13 +52,12 @@ def delete_agency_excursion(db: Session, agency_id: int, excursion_id: int):
     if agency_excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agency excursion association not found")
 
-
     db.delete(agency_excursion)
     db.commit()
 
     return "Success"
 
-from models import AgencyModel, ExcursionModel
+
 def get_weekend_excursions(db:Session, agency_id:int):
     agency = get_agency(db, agency_id)
     if agency is None:
@@ -74,7 +73,6 @@ def get_weekend_excursions(db:Session, agency_id:int):
             ExcursionModel.departure_day.in_(["Friday", "Saturday", "Sunday", "Viernes", "Sábado", "Domingo"])
         ).all()
 
-    
     return related_excursions
 
 

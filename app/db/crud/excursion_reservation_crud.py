@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import ExcursionReservation, TouristModel
+from models import ExcursionReservation, TouristModel, ExtendedExcursionModel
 from schemas import ExcursionReservationSchema
 from db.crud.excursion_crud import get_excursion
 from db.crud.tourist_crud import get_tourist
@@ -10,7 +10,6 @@ from datetime import date
 
 def list_excursion_reservation(db: Session, skip: int, limit: int):
     return db.query(ExcursionReservation).offset(skip).limit(limit).all()
-
 
 def get_excursion_reservation(db: Session, excursion_id: int, tourist_id: int, reservation_date: date):
     return db.query(ExcursionReservation).filter(ExcursionReservation.excursion_id == excursion_id, ExcursionReservation.tourist_id == tourist_id, ExcursionReservation.reservation_date == reservation_date).first()
@@ -24,6 +23,10 @@ def create_excursion_reservation(db: Session, excursion_reservation_create: Excu
     if excursion is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion not found")
     
+    extended_excursion = db.query(ExtendedExcursionModel).filter(ExtendedExcursionModel.excursion_id == excursion_reservation_create.excursion_id).first()
+    if extended_excursion is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Extended Excursions must be reserved in Package Reservations")
+    
     tourist = get_tourist(db, excursion_reservation_create.tourist_id)
     if tourist is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tourist not found")
@@ -35,6 +38,9 @@ def create_excursion_reservation(db: Session, excursion_reservation_create: Excu
     excursion_reservation = get_excursion_reservation(db, excursion_reservation_create.excursion_id, excursion_reservation_create.tourist_id, excursion_reservation_create.reservation_date)
     if excursion_reservation is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Excursion Reservation already exists")
+    
+    if excursion_reservation_create.amount_of_people < 1:
+        excursion_reservation_create.amount_of_people = 1
 
     excursion_reservation = toModel(excursion_reservation_create)
     db.add(excursion_reservation)
@@ -99,9 +105,13 @@ def frequent_tourist_by_excursion(db: Session, excursion_id: int):
 def toModel(schema:ExcursionReservationSchema) -> ExcursionReservation:
     return ExcursionReservation(excursion_id=schema.excursion_id,
                                 tourist_id=schema.tourist_id,
-                                reservation_date=schema.reservation_date)
+                                reservation_date=schema.reservation_date,
+                                amount_of_people=schema.amount_of_people,
+                                air_line=schema.air_line)
 
 def toShema(model:ExcursionReservation) -> ExcursionReservationSchema:
     return ExcursionReservationSchema(excursion_id=model.excursion_id,
                                       tourist_id=model.tourist_id,
-                                      reservation_date=model.reservation_date)
+                                      reservation_date=model.reservation_date,
+                                      amount_of_people=model.amount_of_people,
+                                      air_line=model.air_line)
