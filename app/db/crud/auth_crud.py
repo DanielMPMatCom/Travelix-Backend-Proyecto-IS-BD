@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy import delete
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -28,22 +28,6 @@ def get_password_hash(plain_password):
 def get_user(db: Session, username: str):
     return db.query(UserModel).filter(UserModel.username == username).first()
 
-# def delete_user(db: Session, user_delete: UserSchema):
-
-#     user = get_user(db, user_delete.id)
-#     if user is None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-#     tourist = db.crud.tourist_crud.get_tourist(db, user_delete.id)
-#     if tourist is not None:
-#         db.crud.tourist_crud.delete_tourist(db, user_delete)
-#     else:
-
-#         db.delete(user)
-#         db.commit()
-
-#         return "Success"
-
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user(db, username)
     if not user:
@@ -55,14 +39,14 @@ def authenticate_user(db: Session, username: str, password: str):
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def get_current_user(db: Session, token: str = Depends(oath_2_schema)):
+async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oath_2_schema)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -85,13 +69,3 @@ async def get_current_active_user(current_user: UserModel = Depends(get_current_
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
-def login_for_access_token(db:Session=Depends(get_db), from_data:OAuth2PasswordRequestForm=Depends()):
-    user = authenticate_user(db, from_data.username, from_data.password)
-    if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username, "role": user.role}, expires_delta=access_token_expires
-    )
-    return Token(access_token=access_token, token_type="bearer", role=user.role)
