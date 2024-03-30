@@ -18,6 +18,10 @@ class UserSchema(BaseModel):
     email: Optional[str] = None
     role: Optional[str] = None
 
+class AuthSchema(UserSchema):
+    username: str
+    password: str
+
 class UserCreateSchema(UserSchema):
     password: str
 
