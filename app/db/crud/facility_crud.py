@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import FacilityModel
+from models import FacilityModel, PackageFacilityAssociation
 from schemas import FacilitySchema
 
 
@@ -43,6 +43,10 @@ def update_facility(db: Session, facility_update: FacilitySchema):
     db.commit()
 
     return "Success"
+
+def get_package_facilities(db: Session, package_id: int):
+    return db.query(FacilityModel).join(PackageFacilityAssociation, PackageFacilityAssociation.facility_id == FacilityModel.id)\
+    .filter(PackageFacilityAssociation.package_id == package_id).all()
 
 
 def toModel(schema:FacilitySchema) -> FacilityModel:

@@ -24,3 +24,7 @@ async def delete_facility(facility_id: int, db: Session = Depends(get_db)):
 @router.post("/update", response_model=str)
 async def update_facility(facility_update: FacilitySchema, db: Session = Depends(get_db)):
     return crud.update_facility(db, facility_update)
+
+@router.get("/package_facilities/{id}")
+async def get_package_facilities(package_id: int, db: Session = Depends(get_db)):
+    return crud.get_package_facilities(db, package_id)
