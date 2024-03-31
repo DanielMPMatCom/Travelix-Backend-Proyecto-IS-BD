@@ -19,7 +19,7 @@ async def get_role(current_user: UserSchema = Depends(auth.get_current_active_us
     return current_user.role
 
 @router.post("/create/agent/{marketing_id}", response_model=str)
-async def create_agent(agent: AgentCreateSchema, marketing_id: int, db: Session = Depends(get_db)):
+async def create_agent_by_id(agent: AgentCreateSchema, marketing_id: int, db: Session = Depends(get_db)):
     # if current_user.role != "marketing":
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The current user has no permisson to perform this action")
     
@@ -28,16 +28,14 @@ async def create_agent(agent: AgentCreateSchema, marketing_id: int, db: Session 
 
     return crud.create_agent(db, agent)
 
-@router.post("/create/agent/any", response_model=str)
-async def create_agent_any(agent: AgentCreateSchema, db: Session = Depends(get_db)):
-    
-    # if current_user.role != "admin":
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The current user has no permisson to perform this action")
+@router.post("/create/agent", response_model=str)
+async def create_agent(agent: AgentCreateSchema, db: Session = Depends(get_db)):
 
     if agent.role != "agent" and agent.role != "marketing":
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{agent.role} is not a valid role")
-    
+
     return crud.create_agent(db, agent) if agent.role == "agent" else crud.create_marketing(db, agent)
+
 
 @router.get("/list")
 async def list_users(db: Session = Depends(get_db)):
