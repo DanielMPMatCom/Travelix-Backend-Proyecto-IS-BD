@@ -24,7 +24,7 @@ async def login(from_data:OAuth2PasswordRequestForm=Depends(), db: Session = Dep
 
 
 @router.post("/fake_token")
-async def fake_login(from_data: AuthSchema, db: Session = Depends(get_db)) -> Token:
+async def fake_login(from_data: AuthSchema, db: Session = Depends(get_db)):
     print(from_data.username)
     user = auth.authenticate_user(db, from_data.username, from_data.password)
     if not user:
