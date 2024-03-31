@@ -109,7 +109,9 @@ def most_frecuent_tourists(db: Session, agency_id: int):
             outerjoin(package_reservation_subquery, TouristModel.id == package_reservation_subquery.c.tourist_id).\
             outerjoin(excursion_reservation_subquery, TouristModel.id == excursion_reservation_subquery.c.tourist_id).all()
     
-    # Dame una funcion que me de el promedio de reservaciones en final_query
+    if(len(final_query) == 0):
+        return []
+
     average = sum([result[1] for result in final_query]) / len(final_query)
 
     final_result = []
