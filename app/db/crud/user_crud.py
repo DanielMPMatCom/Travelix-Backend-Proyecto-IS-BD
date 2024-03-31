@@ -6,10 +6,10 @@ from models import UserModel, AgentModel
 from schemas import UserSchema, AgentSchema, AgentCreateSchema
 import db.crud.auth_crud as auth
 
-def list_agents(db:Session, skip:int=0, limit:int=100):
+def list_agents(db:Session, skip:int=0, limit:int=1000):
     return db.query(UserModel).filter(UserModel.role == "agent").offset(skip).limit(limit).all()
 
-def list_marketing(db:Session, skip:int=0, limit:int=100):
+def list_marketing(db:Session, skip:int=0, limit:int=1000):
     return db.query(UserModel).filter(UserModel.role == "marketing").offset(skip).limit(limit).all()
 
 def list_admins(db:Session, skip:int=0, limit:int=100):
@@ -46,11 +46,11 @@ def create_marketing(db: Session, agent_create: AgentCreateSchema):
     
     return "Success"
 
-def delete_agent(db: Session, agent_id: int, role: str):
+def delete_agent(db: Session, agent_id: int):
     agent = get_agent(db, agent_id)
     
-    if agent.role != role:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"You are trying to delete {agent.role} istead of {role}")
+    if agent.role != "marketing" and agent.role != "agent":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"You are trying to delete {agent.role}")
     
     db.delete(agent)
     db.commit()
