@@ -28,3 +28,7 @@ async def get_tourist_me(db: Session = Depends(get_db), current_user: UserSchema
     if current_user.role != "tourist":
         raise HTTPException(status_code=400, detail="User is not a tourist")
     return current_user
+
+@router.get("/get/{tourist_id}")
+async def get_tourist(tourist_id: int, db: Session = Depends(get_db)):
+    return crud.get_tourist(db, tourist_id)
