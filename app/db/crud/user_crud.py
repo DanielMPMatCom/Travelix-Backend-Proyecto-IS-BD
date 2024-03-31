@@ -7,10 +7,10 @@ from schemas import UserSchema, AgentSchema, AgentCreateSchema
 import db.crud.auth_crud as auth
 
 def list_agents(db:Session, skip:int=0, limit:int=1000):
-    return db.query(UserModel).filter(UserModel.role == "agent").offset(skip).limit(limit).all()
+    return db.query(AgentModel).filter(AgentModel.role == "agent").offset(skip).limit(limit).all()
 
 def list_marketing(db:Session, skip:int=0, limit:int=1000):
-    return db.query(UserModel).filter(UserModel.role == "marketing").offset(skip).limit(limit).all()
+    return db.query(AgentModel).filter(AgentModel.role == "marketing").offset(skip).limit(limit).all()
 
 def list_admins(db:Session, skip:int=0, limit:int=100):
     return db.query(UserModel).filter(UserModel.role == "admin").offset(skip).limit(limit).all()
