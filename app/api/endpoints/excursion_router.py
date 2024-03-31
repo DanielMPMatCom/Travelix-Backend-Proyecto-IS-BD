@@ -30,3 +30,6 @@ async def get_excursion(excursion_id: int, db: Session = Depends(get_db)):
     excursion = crud.get_excursion(db, excursion_id)
     return excursion if excursion is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Excursion not found")
 
+@router.get("/list_remaining/{agency_id}")
+async def list_remaining(agency_id: int, db: Session = Depends(get_db)):
+    return crud.list_remaining_excursions(db, agency_id)
