@@ -48,3 +48,7 @@ async def list_agents_by_agency(agency_id:int, db: Session = Depends(get_db)):
 @router.get("/delete/{agent_id}")
 async def delete_user(agent_id:int, db: Session = Depends(get_db)):
     return crud.delete_agent(db, agent_id)
+
+@router.get("/get/{agent_id}")
+async def get_user(agent_id:int, db: Session = Depends(get_db)):
+    return crud.get_agent(db, agent_id)
