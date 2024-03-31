@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import AgencyModel, PackageReservation, AgencyExcursionAssociation, ExcursionReservation, PackageModel
+from sqlalchemy import func
+from models import AgencyModel, PackageReservation, AgencyExcursionAssociation, ExcursionReservation, PackageModel, ExcursionModel
 from schemas import AgencySchema
-
 
 
 def list_agency(db: Session, skip: int, limit: int):
@@ -94,3 +94,47 @@ def toShema(model:AgencyModel) -> AgencySchema:
                         fax_number=model.fax_number, 
                         email=model.email,
                         photo_url=model.photo_url)
+
+def agency_balance_by_agency(db: Session, agency_id: int):
+
+    excursion_reservation_query = db.query(
+        AgencyExcursionAssociation.agency_id.label('agency_id'),
+        func.count(ExcursionModel.id).label('excursion_reservation_count'),
+        func.sum(ExcursionModel.price).label('excursion_reservation_total')).\
+            join(AgencyExcursionAssociation, AgencyExcursionAssociation.excursion_id == ExcursionModel.id).\
+            join(ExcursionReservation, ExcursionReservation.excursion_id == ExcursionModel.id).\
+            filter(AgencyExcursionAssociation.agency_id == agency_id).\
+            group_by(AgencyExcursionAssociation.agency_id)
+
+    package_reservation_query = db.query(
+        PackageModel.agency_id.label('agency_id'),
+        func.count(PackageModel.id).label('package_reservation_count'),
+        func.sum(PackageModel.price).label('package_reservation_total')).\
+            join(PackageReservation, PackageReservation.package_id == PackageModel.id).\
+            filter(PackageModel.agency_id == agency_id).\
+            group_by(PackageModel.agency_id)
+
+    excursion_reservation_subquery = excursion_reservation_query.subquery()
+    package_reservation_subquery = package_reservation_query.subquery()
+
+    final_query = db.query(
+        AgencyModel.id,
+        func.coalesce(excursion_reservation_subquery.c.excursion_reservation_count, 0) + func.coalesce(package_reservation_subquery.c.package_reservation_count, 0), 
+        func.coalesce(excursion_reservation_subquery.c.excursion_reservation_total, 0) + func.coalesce(package_reservation_subquery.c.package_reservation_total, 0)
+    ).outerjoin(
+        excursion_reservation_subquery, 
+        AgencyModel.id == excursion_reservation_subquery.c.agency_id
+    ).outerjoin(
+        package_reservation_subquery, 
+        AgencyModel.id == package_reservation_subquery.c.agency_id
+    ).filter(AgencyModel.id == agency_id).all()
+
+    final_result = [
+        {
+        "agency_id": result[0],
+        "reservation_count": result[1],
+        "reservation_total": result[2]
+        }  
+        for result in final_query]
+
+    return final_result

@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, Path, Depends, status
+from fastapi import APIRouter, HTTPException, Path, Depends, status, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from schemas import AgencySchema
 from db.config import get_db
 import db.crud.agency_crud as crud
+from db.exporter import export_to_excel
+import os
 
 
 router = APIRouter(prefix="/agency", tags=["agency"])
@@ -30,4 +32,13 @@ async def update_agency(agency_update: AgencySchema, db: Session = Depends(get_d
 async def get_agency(agency_id: int, db: Session = Depends(get_db)):
     agency = crud.get_agency(db, agency_id)
     return agency if agency is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Agency not found")
+
+@router.get("/agency-balance/{agency_id}")
+def get_agency_balance(agency_id: int, export: str = None, db: Session = Depends(get_db), background_tasks: BackgroundTasks = None):
+
+    if export is None:
+        return crud.agency_balance_by_agency(db, agency_id)
+    if export == "excel":
+        background_tasks.add_task(os.remove, "agency_balance.xlsx")
+        return export_to_excel("agency_balance.xlsx",  crud.agency_balance_by_agency(db, agency_id))
 
