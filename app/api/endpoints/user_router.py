@@ -34,8 +34,8 @@ async def create_agent_any(agent: AgentCreateSchema, db: Session = Depends(get_d
     # if current_user.role != "admin":
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The current user has no permisson to perform this action")
 
-    # if agent.role != "agent" and agent.role != "marketing":
-    #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{agent.role} is not a valid role")
+    if agent.role != "agent" and agent.role != "marketing":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{agent.role} is not a valid role")
     
     return crud.create_agent(db, agent) if agent.role == "agent" else crud.create_marketing(db, agent)
 
