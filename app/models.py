@@ -5,7 +5,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from db.config import Base
 
 
-
 class UserModel(Base):
 
     __tablename__ = "user"
@@ -54,7 +53,7 @@ class AgencyModel(Base):
     address = Column(String(100), nullable=False)
     fax_number = Column(Integer, nullable=False)
     email = Column(String(100), nullable=False)
-    photo_url = Column(String(200))
+    photo_url = Column(String(500))
 
     excursions = relationship("AgencyExcursionAssociation", back_populates="agencies", cascade="all, delete-orphan")
     offers = relationship("AgencyOfferAssociation", back_populates="agencies", cascade='all, delete-orphan')
@@ -66,14 +65,14 @@ class ExcursionModel(Base):
     __tablename__ = "excursion"
 
     id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
-    departure_day = Column(String(20), nullable=False)
+    departure_day = Column(String(50), nullable=False)
     departure_hour = Column(Time, nullable=False)
     departure_place = Column(String(100), nullable=False)
-    arrival_day = Column(String(20), nullable=False)
+    arrival_day = Column(String(50), nullable=False)
     arrival_hour = Column(Time, nullable=False)
     arrival_place = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
-    photo_url = Column(String(200))
+    photo_url = Column(String(500))
 
 
     agencies = relationship("AgencyExcursionAssociation", back_populates="excursions", cascade="all, delete-orphan")
@@ -109,7 +108,7 @@ class HotelModel(Base):
     name = Column(String(50), nullable=False)
     address = Column(String(100), nullable=False)
     category = Column(Integer, nullable=False)
-    photo_url = Column(String(200))
+    photo_url = Column(String(500))
 
 
     offers = relationship("OfferModel", back_populates="hotel", cascade="all, delete-orphan")
@@ -208,7 +207,7 @@ class PackageModel(Base):
     duration = Column(Integer, nullable=False)
     description = Column(String(100), nullable=False)
     price = Column(Float, nullable=False)
-    photo_url = Column(String(200))
+    photo_url = Column(String(500))
 
     agency = relationship("AgencyModel", back_populates="extended_excursions")
     extended_excursions = relationship("ExtendedExcursionModel", back_populates="agencies")
