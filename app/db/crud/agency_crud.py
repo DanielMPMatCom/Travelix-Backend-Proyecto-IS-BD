@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from models import AgencyModel, PackageReservation, AgencyExcursionAssociation, ExcursionReservation, PackageModel, ExcursionModel
+from models import AgencyModel, PackageReservation, AgencyExcursionAssociation, ExcursionReservation, PackageModel, ExcursionModel, TouristModel
 from schemas import AgencySchema
 
 
@@ -78,6 +78,62 @@ def update_agency(db: Session, agency_update: AgencySchema):
     db.commit()
 
     return "Success"
+
+def most_frecuent_tourists(db: Session, agency_id: int):
+
+    #Subquery to get amount of reservations for tourist in packages
+    package_reservation_query = db.query(
+        PackageReservation.tourist_id.label('tourist_id'),
+        func.count(PackageReservation.tourist_id).label('package_reservation_count')).\
+            join(PackageModel, PackageModel.id == PackageReservation.package_id).\
+                filter(PackageModel.agency_id == agency_id).\
+                    group_by(PackageReservation.tourist_id)
+    
+    #Subquery to get amount of reservations for tourist in excursions
+    excursion_reservation_query = db.query(
+        ExcursionReservation.tourist_id.label('tourist_id'),
+        func.count(ExcursionReservation.tourist_id).label('excursion_reservation_count')).\
+            join(ExcursionModel, ExcursionModel.id == ExcursionReservation.excursion_id).\
+                join(AgencyExcursionAssociation, AgencyExcursionAssociation.excursion_id == ExcursionModel.id).\
+                    filter(AgencyExcursionAssociation.agency_id == agency_id).\
+                        group_by(ExcursionReservation.tourist_id)
+    
+    # Joining the two subqueries
+    package_reservation_subquery = package_reservation_query.subquery()
+    excursion_reservation_subquery = excursion_reservation_query.subquery()
+
+    # Final query to get the most frecuent tourists
+    final_query = db.query(
+        TouristModel,
+        func.coalesce(package_reservation_subquery.c.package_reservation_count, 0) + func.coalesce(excursion_reservation_subquery.c.excursion_reservation_count, 0)).\
+            outerjoin(package_reservation_subquery, TouristModel.id == package_reservation_subquery.c.tourist_id).\
+            outerjoin(excursion_reservation_subquery, TouristModel.id == excursion_reservation_subquery.c.tourist_id).all()
+    
+    # Dame una funcion que me de el promedio de reservaciones en final_query
+    average = sum([result[1] for result in final_query]) / len(final_query)
+
+    final_result = []
+
+    for result in final_query:
+
+        if result[1] > average:
+            final_query.append(
+                {
+                "tourist_id": result[0].id,
+                "tourist_name": result[0].name,
+                "total_reservations": result[1],
+                }  
+            )
+
+    return final_result
+
+def agency_packages_above_average(db: Session, agency_id: int):
+
+    packages_above_average = db.query(PackageModel).\
+        filter(PackageModel.agency_id == agency_id).\
+        filter(PackageModel.price > db.query(func.avg(PackageModel.price).filter(PackageModel.agency_id == agency_id)).scalar()).all()
+    
+    return packages_above_average
 
 def toModel(schema:AgencySchema) -> AgencyModel:
     return AgencyModel(
