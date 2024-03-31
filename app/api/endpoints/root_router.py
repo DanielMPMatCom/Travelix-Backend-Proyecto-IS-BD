@@ -33,4 +33,4 @@ async def fake_login(from_data: AuthSchema, db: Session = Depends(get_db)) -> To
     access_token = auth.create_access_token(
         data={"sub": user.username, "role": user.role}, expires_delta=access_token_expires
     )
-    return Token(access_token=access_token, token_type="bearer", role=user.role)
+    return {"Token" : Token(access_token=access_token, token_type="bearer", role=user.role), "id" : user.id}

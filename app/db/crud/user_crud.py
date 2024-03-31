@@ -81,6 +81,14 @@ def update_agent(db: Session, user_update: AgentSchema):
     
     return "Success"
 
+def get_agent_by_username(db: Session, username: str) -> AgentModel:
+    agent = db.query(AgentModel).filter(AgentModel.username == username).first()
+    
+    if agent is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Agent not found")
+    
+    return agent
+
 def AgentToModel(schema: AgentCreateSchema, role: str) -> AgentModel:
     return AgentModel(
         username=schema.username,
