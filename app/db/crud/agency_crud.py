@@ -120,14 +120,10 @@ def agency_balance_by_agency(db: Session, agency_id: int):
     final_query = db.query(
         AgencyModel.id,
         func.coalesce(excursion_reservation_subquery.c.excursion_reservation_count, 0) + func.coalesce(package_reservation_subquery.c.package_reservation_count, 0), 
-        func.coalesce(excursion_reservation_subquery.c.excursion_reservation_total, 0) + func.coalesce(package_reservation_subquery.c.package_reservation_total, 0)
-    ).outerjoin(
-        excursion_reservation_subquery, 
-        AgencyModel.id == excursion_reservation_subquery.c.agency_id
-    ).outerjoin(
-        package_reservation_subquery, 
-        AgencyModel.id == package_reservation_subquery.c.agency_id
-    ).filter(AgencyModel.id == agency_id).all()
+        func.coalesce(excursion_reservation_subquery.c.excursion_reservation_total, 0) + func.coalesce(package_reservation_subquery.c.package_reservation_total, 0)).\
+            outerjoin(excursion_reservation_subquery, AgencyModel.id == excursion_reservation_subquery.c.agency_id).\
+                outerjoin(package_reservation_subquery, AgencyModel.id == package_reservation_subquery.c.agency_id).\
+                    filter(AgencyModel.id == agency_id).all()
 
     final_result = [
         {
