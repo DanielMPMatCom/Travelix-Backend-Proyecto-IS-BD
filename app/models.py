@@ -210,11 +210,11 @@ class PackageModel(Base):
     price = Column(Float, nullable=False)
     photo_url = Column(String(200))
 
-
     agency = relationship("AgencyModel", back_populates="extended_excursions")
     extended_excursions = relationship("ExtendedExcursionModel", back_populates="agencies")
     tourists = relationship('PackageReservation', back_populates='packages', cascade="all, delete-orphan")
     facilities = relationship("PackageFacilityAssociation", back_populates="packages", cascade="all, delete-orphan")
+
 class PackageReservation(Base):
 
     __tablename__ = "package_reservation"
