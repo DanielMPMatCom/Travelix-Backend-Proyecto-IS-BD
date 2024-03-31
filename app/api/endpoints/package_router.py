@@ -34,3 +34,6 @@ async def get_package(package_id: int, db: Session = Depends(get_db)):
 async def get_related_hotels(package_id: int, db: Session=Depends(get_db)):
     return crud.get_package_hotels(db, package_id)
 
+@router.get("/list_by_agency/{agency_id}")
+async def list_by_agency(agency_id:int, db: Session = Depends(get_db)):
+    return crud.packages_by_agency(db, agency_id)

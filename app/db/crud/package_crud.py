@@ -102,6 +102,9 @@ def get_package_hotels(db:Session, package_id:int):
 
     return hotels
 
+def packages_by_agency(db:Session, agency_id:int, skip:int=0, limit:int=1000):
+    return db.query(PackageModel).filter(PackageModel.agency_id == agency_id).offset(skip).limit(limit).all()
+
 
 def toModel(schema:PackageSchema) -> PackageModel:
     return PackageModel(
