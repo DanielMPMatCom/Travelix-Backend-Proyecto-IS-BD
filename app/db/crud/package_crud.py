@@ -38,7 +38,7 @@ def create_package(db: Session, package_create: PackageSchema):
     db.commit()
     db.refresh(package)
 
-    return "Success"
+    return package.id
 
 def delete_package(db: Session, package_id: int):
 
