@@ -10,8 +10,8 @@ def list_agents(db:Session, skip:int=0, limit:int=1000):
     return db.query(AgentModel).filter(AgentModel.role == "agent").offset(skip).limit(limit).all()
 
 def list_agents_by_agency(db:Session, agency_id:int, skip:int=0, limit:int=1000):
-    return db.query(AgentModel).filter(AgentModel.agency_id == agency_id and AgentModel.role == "agent").\
-        offset(skip).limit(limit).all()
+    return db.query(AgentModel).filter(AgentModel.agency_id == agency_id).\
+        filter(AgentModel.role == "agent").offset(skip).limit(limit).all()
 
 def list_marketing(db:Session, skip:int=0, limit:int=1000):
     return db.query(AgentModel).filter(AgentModel.role == "marketing").offset(skip).limit(limit).all()
