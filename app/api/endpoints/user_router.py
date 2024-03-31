@@ -18,13 +18,13 @@ async def get_role(current_user: UserSchema = Depends(auth.get_current_active_us
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return current_user.role
 
-@router.post("/create/agent", response_model=str)
-async def create_agent(agent: AgentCreateSchema, current_user: UserModel = Depends(auth.get_current_active_user), db: Session = Depends(get_db)):
-    if current_user.role != "marketing":
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The current user has no permisson to perform this action")
+@router.post("/create/agent/{marketing_id}", response_model=str)
+async def create_agent(agent: AgentCreateSchema, marketing_id: int, db: Session = Depends(get_db)):
+    # if current_user.role != "marketing":
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The current user has no permisson to perform this action")
     
     agent.role = "agent"
-    agent.agency_id = crud.get_agent(db, current_user.id).agency_id    
+    agent.agency_id = crud.get_agent(db, marketing_id).agency_id    
 
     return crud.create_agent(db, agent)
 
