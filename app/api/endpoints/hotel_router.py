@@ -29,3 +29,7 @@ async def update_hotel(hotel_update: HotelSchema, db: Session = Depends(get_db))
 async def get_hotel(hotel_id: int, db: Session = Depends(get_db)):
     hotel = crud.get_hotel(db, hotel_id)
     return hotel if hotel is not None else HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Hotel not found")
+
+@router.get("/excursion_hotels/{excursion_id}")
+async def excursion_hotels(excursion_id: int, db: Session = Depends(get_db)):
+    return crud.excursion_hotels(db, excursion_id)

@@ -69,6 +69,13 @@ def update_hotel(db: Session, hotel_update: HotelSchema):
 
     return "Success"
 
+def excursion_hotels(db: Session, excursion_id: int):
+
+    hotels = db.query(HotelModel).join(HotelExtendedExcursionAssociation, HotelExtendedExcursionAssociation.hotel_id == HotelModel.id)\
+    .filter(HotelExtendedExcursionAssociation.extended_excursion_id == excursion_id).all()
+
+    return hotels
+
 
 def toModel(schema:HotelSchema) -> HotelModel:
     return HotelModel(
