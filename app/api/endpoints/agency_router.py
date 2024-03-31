@@ -42,3 +42,24 @@ def get_agency_balance(agency_id: int, export: str = None, db: Session = Depends
         background_tasks.add_task(os.remove, "agency_balance.xlsx")
         return export_to_excel("agency_balance.xlsx",  crud.agency_balance_by_agency(db, agency_id))
 
+@router.get("/packages_above_average/{agency_id}")
+async def packages_above_average(agency_id:int, export: str = None, db: Session = Depends(get_db), background_tasks: BackgroundTasks = None):
+    
+    packages = crud.agency_packages_above_average(db, agency_id)
+
+    if export is None:
+        return packages
+    if export == "excel":
+        background_tasks.add_task(os.remove, "packages_above_average.xlsx")
+        return export_to_excel("packages_above_average.xlsx", packages)
+    
+@router.get("/most_frecuent_tourists/{agency_id}")
+async def most_frecuent_tourists(agency_id:int, export: str = None, db: Session = Depends(get_db), background_tasks: BackgroundTasks = None):
+    
+    tourists = crud.most_frecuent_tourists(db, agency_id)
+
+    if export is None:
+        return tourists
+    if export == "excel":
+        background_tasks.add_task(os.remove, "most_frecuent_tourists.xlsx")
+        return export_to_excel("most_frecuent_tourists.xlsx", tourists)

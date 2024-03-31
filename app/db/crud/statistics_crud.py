@@ -11,6 +11,7 @@ def packages_above_average(db: Session):
     
     return packages_above_average
 
+
 def agencies_balance(db: Session):
 
     excursion_reservation_query = db.query(
