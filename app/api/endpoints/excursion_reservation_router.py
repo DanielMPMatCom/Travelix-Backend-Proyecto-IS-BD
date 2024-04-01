@@ -25,3 +25,7 @@ async def delete_excursion_reservation(excursion_id: int, tourist_id: int, reser
 @router.get("/get_frequent_tourist_by_excursion/{excursion_id}")
 async def get_frequent_tourist_by_excursion(excursion_id:int, db:Session=Depends(get_db)):
     return crud.frequent_tourist_by_excursion(db, excursion_id)
+
+@router.get("/get_frequent_tourist_by_agency/{agency_id}/{excursion_id}}")
+async def get_frequent_tourist_by_agency(agency_id:int, excursion_id:int, db:Session=Depends(get_db)):
+    return crud.frequent_tourist_by_agency(db, agency_id, excursion_id)

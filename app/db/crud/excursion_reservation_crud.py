@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import ExcursionReservation, TouristModel, ExtendedExcursionModel
+from models import ExcursionReservation, TouristModel, ExtendedExcursionModel, AgencyExcursionAssociation, ExcursionModel
 from schemas import ExcursionReservationSchema
 from db.crud.excursion_crud import get_excursion
 from db.crud.tourist_crud import get_tourist
@@ -101,6 +101,42 @@ def frequent_tourist_by_excursion(db: Session, excursion_id: int):
     result = [{"name": name, "email": email} for name, email in result]
 
     return result
+
+def frequent_tourist_by_agency(db: Session, agency_id: int, excursion_id: int):
+
+    excursion = get_excursion(db, excursion_id)
+    if excursion is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion not found")
+    
+    reserved_excursion = get_excursion_reservation_by_excursion(db, excursion_id)
+    if reserved_excursion is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Excursion Reservation not found")
+
+    result = db.query(
+        TouristModel.name,
+        TouristModel.email
+    ).join(
+        ExcursionReservation,
+        ExcursionReservation.tourist_id == TouristModel.id
+    ).join(
+        AgencyExcursionAssociation, 
+        AgencyExcursionAssociation.excursion_id == ExcursionReservation.excursion_id
+    ).filter(
+        ExcursionReservation.excursion_id == excursion_id
+    ).filter(
+        AgencyExcursionAssociation.agency_id == agency_id
+    ).group_by(
+        TouristModel.name,
+        TouristModel.email
+    ).having(
+        func.count(ExcursionReservation.excursion_id) > 1
+    ).all()
+
+    # Convert the result to a list of dictionaries
+    result = [{"name": name, "email": email} for name, email in result]
+
+    return result
+    
 
 def toModel(schema:ExcursionReservationSchema) -> ExcursionReservation:
     return ExcursionReservation(excursion_id=schema.excursion_id,
