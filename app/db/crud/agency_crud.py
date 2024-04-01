@@ -119,7 +119,7 @@ def most_frecuent_tourists(db: Session, agency_id: int):
     for result in final_query:
 
         if result[1] > average:
-            final_query.append(
+            final_result.append(
                 {
                 "tourist_id": result[0].id,
                 "tourist_name": result[0].name,
