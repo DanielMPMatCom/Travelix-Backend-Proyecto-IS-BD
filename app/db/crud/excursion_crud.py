@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from models import ExcursionModel, ExcursionReservation, PackageReservation, ExtendedExcursionModel, PackageModel, AgencyExcursionAssociation
+from models import ExcursionModel, ExcursionReservation, PackageReservation, ExtendedExcursionModel, PackageModel, AgencyExcursionAssociation, AgencyModel
 from schemas import ExcursionSchema
 
 
@@ -95,6 +95,11 @@ def list_reservable_excursions(db: Session):
 def list_reservable_excursion(db: Session, agency_id):
     return db.query(ExcursionModel).join(AgencyExcursionAssociation).\
         filter(AgencyExcursionAssociation.agency_id == agency_id).group_by(ExcursionModel.id).all()
+
+def list_related_agencies(db: Session, excursion_id: int):
+    return db.query(AgencyModel).\
+        join(AgencyExcursionAssociation, AgencyExcursionAssociation.agency_id == AgencyModel.id).\
+            filter(AgencyExcursionAssociation.excursion_id == excursion_id).all()
 
 
 def toModel(schema:ExcursionSchema) -> ExcursionModel:

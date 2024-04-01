@@ -48,6 +48,15 @@ def create_excursion_reservation(
             status_code=status.HTTP_404_NOT_FOUND, detail="Agency not found"
         )
     
+    relation_exists = db.query(AgencyExcursionAssociation).\
+        filter(AgencyExcursionAssociation.agency_id == excursion_reservation_create.agency_id).\
+            filter(AgencyExcursionAssociation.excursion_id == excursion_reservation_create.excursion_id).first()
+    
+    if relation_exists is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Agency and Excursion are not associated"
+        )
+    
     excursion = get_excursion(db, excursion_reservation_create.excursion_id)
     if excursion is None:
         raise HTTPException(

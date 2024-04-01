@@ -41,3 +41,7 @@ async def list_reservable(db: Session = Depends(get_db)):
 @router.get("/list_reservable/{agency_id}")
 async def list_reservable_by_id(agency_id: int, db: Session = Depends(get_db)):
     return crud.list_reservable_excursion(db, agency_id)
+
+@router.get("/list_related_agencies/{excursion_id}")
+async def list_related_agencies(excursion_id: int, db: Session = Depends(get_db)):
+    return crud.list_related_agencies(db, excursion_id)
