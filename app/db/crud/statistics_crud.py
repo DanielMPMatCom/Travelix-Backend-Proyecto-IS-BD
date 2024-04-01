@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from models import PackageModel, PackageReservation
@@ -5,6 +6,11 @@ from models import AgencyExcursionAssociation, ExcursionReservation, ExcursionMo
 from models import AgencyModel
 
 def packages_above_average(db: Session):
+
+    package_exists = db.query(PackageModel.price).first()
+    
+    if package_exists is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Package not found")
 
     packages_above_average = db.query(PackageModel).\
         filter(PackageModel.price > db.query(func.avg(PackageModel.price)).scalar()).all()
@@ -21,7 +27,8 @@ def agencies_balance(db: Session):
             join(AgencyExcursionAssociation, AgencyExcursionAssociation.agency_id == AgencyModel.id).\
                 join(ExcursionModel, ExcursionModel.id == AgencyExcursionAssociation.excursion_id).\
                     join(ExcursionReservation, ExcursionReservation.excursion_id == ExcursionModel.id).\
-                        group_by(AgencyModel.name)
+                        filter(ExcursionReservation.agency_id == AgencyModel.id).\
+                            group_by(AgencyModel.name)
 
     package_reservation_query = db.query(
         AgencyModel.name,

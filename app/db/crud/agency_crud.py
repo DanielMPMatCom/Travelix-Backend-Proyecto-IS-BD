@@ -34,7 +34,8 @@ def delete_agency(db: Session, agency_delete_id: int):
 
     reserved_excursion_with_agency = db.query(AgencyExcursionAssociation).\
         join(ExcursionReservation, AgencyExcursionAssociation.excursion_id == ExcursionReservation.excursion_id).\
-        filter(AgencyExcursionAssociation.agency_id == agency_delete_id).first()
+            fiter(AgencyExcursionAssociation.agency_id == agency_delete_id).\
+                filter(AgencyExcursionAssociation.agency_id == agency_delete_id).first()
         
     if reserved_excursion_with_agency is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Can't delete this Agency because is is ivolved in an Excursion Reservation")
@@ -95,8 +96,9 @@ def most_frecuent_tourists(db: Session, agency_id: int):
         func.count(ExcursionReservation.tourist_id).label('excursion_reservation_count')).\
             join(ExcursionModel, ExcursionModel.id == ExcursionReservation.excursion_id).\
                 join(AgencyExcursionAssociation, AgencyExcursionAssociation.excursion_id == ExcursionModel.id).\
-                    filter(AgencyExcursionAssociation.agency_id == agency_id).\
-                        group_by(ExcursionReservation.tourist_id)
+                    filter(ExcursionReservation.agency_id == agency_id).\
+                        filter(AgencyExcursionAssociation.agency_id == agency_id).\
+                            group_by(ExcursionReservation.tourist_id)
     
     # Joining the two subqueries
     package_reservation_subquery = package_reservation_query.subquery()
@@ -166,6 +168,7 @@ def agency_balance_by_agency(db: Session, agency_id: int):
         func.sum(ExcursionModel.price).label('excursion_reservation_total')).\
             join(AgencyExcursionAssociation, AgencyExcursionAssociation.excursion_id == ExcursionModel.id).\
             join(ExcursionReservation, ExcursionReservation.excursion_id == ExcursionModel.id).\
+            filter(ExcursionReservation.agency_id == agency_id).\
             filter(AgencyExcursionAssociation.agency_id == agency_id).\
             group_by(AgencyExcursionAssociation.agency_id)
 

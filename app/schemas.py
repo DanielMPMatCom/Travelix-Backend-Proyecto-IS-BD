@@ -93,6 +93,7 @@ class AgencyExcursionAssociationSchema(BaseModel):
 class ExcursionReservationSchema(BaseModel):
     tourist_id: Optional[int]
     excursion_id: Optional[int]
+    agency_id: Optional[int]
     reservation_date: Optional[date] = None
     amount_of_people: Optional[int] = None
     air_line: Optional[str] = None

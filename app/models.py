@@ -164,6 +164,7 @@ class ExcursionReservation(Base):
 
     tourist_id = Column(Integer, ForeignKey('tourist.id'), primary_key=True, nullable=False)
     excursion_id = Column(Integer, ForeignKey('excursion.id'), primary_key=True, nullable=False)
+    agency_id = Column(Integer, ForeignKey('agency.id'), primary_key=True, nullable=False)
     reservation_date = Column(Date, primary_key=True, nullable=False)
     amount_of_people = Column(Integer, nullable=False)
     air_line = Column(String(50), nullable=False)
