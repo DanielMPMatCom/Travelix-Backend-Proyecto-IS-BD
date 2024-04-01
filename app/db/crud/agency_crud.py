@@ -131,6 +131,11 @@ def most_frecuent_tourists(db: Session, agency_id: int):
 
 def agency_packages_above_average(db: Session, agency_id: int):
 
+    package_exists = db.query(PackageModel).filter(PackageModel.agency_id == agency_id).first()
+    
+    if package_exists is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no package related to that agency")
+
     packages_above_average = db.query(PackageModel).\
         filter(PackageModel.agency_id == agency_id).\
         filter(PackageModel.price > db.query(func.avg(PackageModel.price).filter(PackageModel.agency_id == agency_id)).scalar()).all()
