@@ -89,6 +89,14 @@ def list_remaining_excursions(db: Session, agency_id: int):
     return db.query(ExcursionModel).join(AgencyExcursionAssociation).\
         filter(AgencyExcursionAssociation.agency_id != agency_id).group_by(ExcursionModel.id).all()
 
+def list_reservable_excursions(db: Session):
+    return db.query(ExcursionModel).join(AgencyExcursionAssociation).group_by(ExcursionModel.id).all()
+
+def list_reservable_excursion(db: Session, agency_id):
+    return db.query(ExcursionModel).join(AgencyExcursionAssociation).\
+        filter(AgencyExcursionAssociation.agency_id == agency_id).group_by(ExcursionModel.id).all()
+
+
 def toModel(schema:ExcursionSchema) -> ExcursionModel:
     return ExcursionModel(
                           departure_day=schema.departure_day, 
