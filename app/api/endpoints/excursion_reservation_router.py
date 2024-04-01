@@ -18,14 +18,14 @@ async def list_excursion_reservation(db:Session=Depends(get_db), skip:int=0, lim
 async def create_excursion_reservation(excursion_reservation_create: ExcursionReservationSchema, db: Session = Depends(get_db)):
     return crud.create_excursion_reservation(db, excursion_reservation_create)
 
-@router.get("/delete{excursion_id}{tourist_id}{reservation_date}", response_model=str)
-async def delete_excursion_reservation(excursion_id: int, tourist_id: int, reservation_date: date, db: Session = Depends(get_db)):
-    return crud.delete_excursion_reservation(db, excursion_id, tourist_id, reservation_date)
+@router.get("/delete/{excursion_id}/{tourist_id}/{agency_id}/{reservation_date}", response_model=str)
+async def delete_excursion_reservation(excursion_id: int, tourist_id: int, agency_id: int, reservation_date: date, db: Session = Depends(get_db)):
+    return crud.delete_excursion_reservation(db, excursion_id, tourist_id, agency_id, reservation_date)
 
 @router.get("/get_frequent_tourist_by_excursion/{excursion_id}")
 async def get_frequent_tourist_by_excursion(excursion_id:int, db:Session=Depends(get_db)):
     return crud.frequent_tourist_by_excursion(db, excursion_id)
 
 @router.get("/get_frequent_tourist_by_agency/{agency_id}/{excursion_id}}")
-async def get_frequent_tourist_by_agency(agency_id:int, excursion_id:int, db:Session=Depends(get_db)):
+async def get_frequent_excursion_by_tourist(agency_id:int, excursion_id:int, db:Session=Depends(get_db)):
     return crud.frequent_tourist_by_agency(db, agency_id, excursion_id)
