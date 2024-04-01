@@ -32,3 +32,11 @@ async def get_tourist_me(db: Session = Depends(get_db), current_user: UserSchema
 @router.get("/get/{tourist_id}")
 async def get_tourist(tourist_id: int, db: Session = Depends(get_db)):
     return crud.get_tourist(db, tourist_id)
+
+@router.get("/list_excursion_reservations/{tourist_id}")
+async def list_excursion_reservations(tourist_id: int, db: Session = Depends(get_db)):
+    return crud.get_reserved_excursions(db, tourist_id)
+
+@router.get("/list_package_reservations/{tourist_id}")
+async def list_package_reservations(tourist_id: int, db: Session = Depends(get_db)):
+    return crud.get_reserved_packages(db, tourist_id)
