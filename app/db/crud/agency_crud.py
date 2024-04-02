@@ -34,7 +34,7 @@ def delete_agency(db: Session, agency_delete_id: int):
 
     reserved_excursion_with_agency = db.query(AgencyExcursionAssociation).\
         join(ExcursionReservation, AgencyExcursionAssociation.excursion_id == ExcursionReservation.excursion_id).\
-            fiter(AgencyExcursionAssociation.agency_id == agency_delete_id).\
+            filter(AgencyExcursionAssociation.agency_id == agency_delete_id).\
                 filter(AgencyExcursionAssociation.agency_id == agency_delete_id).first()
         
     if reserved_excursion_with_agency is not None:
