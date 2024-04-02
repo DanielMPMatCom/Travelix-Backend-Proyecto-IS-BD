@@ -17,7 +17,7 @@ async def list_hotel(db:Session=Depends(get_db), skip:int=0, limit:int=10):
 async def create_hotel(hotel_create: HotelSchema, db: Session = Depends(get_db)):
     return crud.create_hotel(db, hotel_create)
 
-@router.get("/delete{hotel_id}", response_model=str)
+@router.get("/delete/{hotel_id}", response_model=str)
 async def delete_hotel(hotel_id: int, db: Session = Depends(get_db)):
     return crud.delete_hotel(db, hotel_id)
 
