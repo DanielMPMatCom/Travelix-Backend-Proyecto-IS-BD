@@ -40,3 +40,7 @@ async def list_excursion_reservations(tourist_id: int, db: Session = Depends(get
 @router.get("/list_package_reservations/{tourist_id}")
 async def list_package_reservations(tourist_id: int, db: Session = Depends(get_db)):
     return crud.get_reserved_packages(db, tourist_id)
+
+@router.get("/list_tourist_types/{tourist_id}")
+async def list_tourist_types(tourist_id: int, db: Session = Depends(get_db)):
+    return crud.tourist_type_by_tourist(db, tourist_id)
