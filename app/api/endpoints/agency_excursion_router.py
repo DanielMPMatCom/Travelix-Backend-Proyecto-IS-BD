@@ -17,7 +17,7 @@ async def list_agency_excursion(db:Session=Depends(get_db), skip:int=0, limit:in
 async def create_agency_excursion(agency_excursion_create: AgencyExcursionAssociationSchema, db: Session = Depends(get_db)):
     return crud.create_agency_excursion(db, agency_excursion_create)
 
-@router.get("/delete/{agency_id}{excursion_id}", response_model=str)
+@router.get("/delete/{agency_id}/{excursion_id}", response_model=str)
 async def delete_agency_excursion(agency_id: int, excursion_id: int, db: Session = Depends(get_db)):
     return crud.delete_agency_excursion(db, agency_id, excursion_id)
 
