@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from models import TouristModel, UserModel, TouristTypeTouristAssociation, PackageReservation, ExcursionReservation
+from models import TouristModel, UserModel, TouristTypeTouristAssociation, PackageReservation, ExcursionReservation, TouristTypeModel
 from schemas import TouristSchema, TouristCreateSchema
 import db.crud.auth_crud as auth
 
@@ -80,6 +80,15 @@ def get_reserved_excursions(db: Session, tourist_id: int):
     return db.query(ExcursionReservation).filter(ExcursionReservation.tourist_id == tourist_id).all()
 
 
+def tourist_type_by_tourist(db: Session, tourist_id: int):
+    tourist = get_tourist(db, tourist_id)
+    if tourist is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Tourist not found"
+        )
+    
+    return db.query(TouristTypeModel).join(TouristTypeTouristAssociation).filter(TouristTypeTouristAssociation.tourist_id == tourist_id).all()
 
 # def UserToModel(schema: TouristCreateSchema) -> UserModel:
 #     return UserModel(
