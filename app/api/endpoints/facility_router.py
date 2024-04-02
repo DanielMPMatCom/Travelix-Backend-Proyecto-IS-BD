@@ -17,7 +17,7 @@ async def list_facility(db:Session=Depends(get_db), skip:int=0, limit:int=10):
 async def create_facility(facility_create: FacilitySchema, db: Session = Depends(get_db)):
     return crud.create_facility(db, facility_create)
 
-@router.get("/delete{facility_id}", response_model=str)
+@router.get("/delete/{facility_id}", response_model=str)
 async def delete_facility(facility_id: int, db: Session = Depends(get_db)):
     return crud.delete_facility(db, facility_id)
 

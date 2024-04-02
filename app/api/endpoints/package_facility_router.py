@@ -17,6 +17,6 @@ async def list_package_facility(db:Session=Depends(get_db), skip:int=0, limit:in
 async def create_package_facility(package_facility_create: PackageFacilityAssociationSchema, db: Session = Depends(get_db)):
     return crud.create_package_facility(db, package_facility_create)
 
-@router.get("/delete{package_id}/{faciliy_id}", response_model=str)
+@router.get("/delete/{package_id}/{faciliy_id}", response_model=str)
 async def delete_package_facility(package_id: int, facility_id: int, db: Session = Depends(get_db)):
     return crud.delete_package_facility(db, package_id, facility_id)
